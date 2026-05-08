@@ -11,7 +11,7 @@
             </h2>
 
             <a href="{{ route('admin.profile') }}"
-               class="hidden h-[46px] min-w-[100px] items-center justify-center rounded-[12px] border border-gray-400 px-6 text-[16px] font-medium text-gray-600 hover:bg-gray-100 transition">
+               class="inline-flex h-[46px] min-w-[100px] items-center justify-center rounded-[12px] border border-gray-400 px-6 text-[16px] font-medium text-gray-600 hover:bg-gray-100 transition">
                 Batal
             </a>
         </div>
@@ -31,8 +31,8 @@
 
             <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] items-center gap-y-4 text-[18px]">
                 <label class="text-[#333]">Username</label>
-                <input type="text" value="{{ $profile->username ?? '' }}" readonly
-                    class="h-[42px] w-full max-w-[360px] cursor-not-allowed rounded-[10px] border border-[#555] bg-gray-100 px-4 text-[#777] outline-none">
+                <input type="text" name="username" value="{{ old('username', $profile->username ?? '') }}"
+                    class="h-[42px] w-full max-w-[360px] rounded-[10px] border border-[#555] bg-white px-4 text-[#4a4a4a] outline-none focus:border-[#24b18a]">
 
                 <label class="text-[#333]">Email</label>
                 <input type="email" name="email" value="{{ old('email', $profile->email ?? '') }}"
@@ -43,13 +43,63 @@
                     class="h-[42px] w-full max-w-[360px] rounded-[10px] border border-[#555] bg-white px-4 text-[#4a4a4a] outline-none focus:border-[#24b18a]">
 
                 <label class="text-[#333]">Password Lama</label>
-                <input type="password" name="old_password" placeholder="Masukkan password lama"
-                    class="h-[42px] w-full max-w-[360px] rounded-[10px] border border-[#555] bg-white px-4 text-[#4a4a4a] outline-none focus:border-[#24b18a]">
+                <div class="relative w-full max-w-[360px]">
+                    <input
+                        type="password"
+                        name="old_password"
+                        id="old_password"
+                        placeholder="Masukkan password lama"
+                        class="h-[42px] w-full rounded-[10px] border border-[#555] bg-white px-4 pr-12 text-[#4a4a4a] outline-none focus:border-[#24b18a]"
+                    >
+        <button
+            type="button"
+            data-toggle-password
+            data-target="old_password"
+            class="absolute inset-y-0 right-3 flex items-center text-[#66708a] hover:text-[#21a078]"
+            aria-label="Lihat password"
+        >
+            <svg class="icon-eye h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12 18 18.75 12 18.75 2.25 12 2.25 12Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+            <svg class="icon-eye-off hidden h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.58 10.58A2 2 0 0 0 12 14a2 2 0 0 0 1.42-.58" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.88 4.35A10.8 10.8 0 0 1 12 4.13c6 0 9.75 6.75 9.75 6.75a17.2 17.2 0 0 1-2.34 3.07" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.42 6.42C3.84 8.1 2.25 12 2.25 12S6 18.75 12 18.75c1.36 0 2.62-.35 3.75-.9" />
+            </svg>
+        </button>
+                </div>
 
                 <label class="text-[#333]">Password Baru</label>
                 <div>
-                    <input type="password" name="password" placeholder="Kosongkan jika tidak diganti"
-                        class="h-[42px] w-full max-w-[360px] rounded-[10px] border border-[#555] bg-white px-4 text-[#4a4a4a] outline-none focus:border-[#24b18a]">
+                    <div class="relative w-full max-w-[360px]">
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            placeholder="Kosongkan jika tidak diganti"
+                            class="h-[42px] w-full rounded-[10px] border border-[#555] bg-white px-4 pr-12 text-[#4a4a4a] outline-none focus:border-[#24b18a]"
+                        >
+        <button
+            type="button"
+            data-toggle-password
+            data-target="password"
+            class="absolute inset-y-0 right-3 flex items-center text-[#66708a] hover:text-[#21a078]"
+            aria-label="Lihat password"
+        >
+            <svg class="icon-eye h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12 18 18.75 12 18.75 2.25 12 2.25 12Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+            <svg class="icon-eye-off hidden h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.58 10.58A2 2 0 0 0 12 14a2 2 0 0 0 1.42-.58" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.88 4.35A10.8 10.8 0 0 1 12 4.13c6 0 9.75 6.75 9.75 6.75a17.2 17.2 0 0 1-2.34 3.07" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.42 6.42C3.84 8.1 2.25 12 2.25 12S6 18.75 12 18.75c1.36 0 2.62-.35 3.75-.9" />
+            </svg>
+        </button>
+                    </div>
 
                     <p class="mt-1 text-sm font-semibold text-[#66708a]">
                         Password baru minimal 6 karakter
@@ -91,7 +141,7 @@
                 </select>
             </div>
 
-            <div class="mt-8 flex justify-end gap-4">
+            <div class="mt-8 flex items-center gap-4">
                 <button type="submit"
                     class="inline-flex h-[46px] min-w-[120px] items-center justify-center rounded-[12px] bg-[#24b18a] px-6 text-[17px] font-semibold text-white hover:bg-[#1e9d79] transition">
                     Simpan
@@ -204,5 +254,28 @@
             loadKecamatan(this.value);
         });
     </script>
+
+<script>
+    (function () {
+        document.querySelectorAll('[data-toggle-password]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const input = document.getElementById(button.dataset.target);
+                const eye = button.querySelector('.icon-eye');
+                const eyeOff = button.querySelector('.icon-eye-off');
+
+                if (!input) return;
+
+                const willShow = input.type === 'password';
+                input.type = willShow ? 'text' : 'password';
+
+                if (eye && eyeOff) {
+                    eye.classList.toggle('hidden', willShow);
+                    eyeOff.classList.toggle('hidden', !willShow);
+                }
+            });
+        });
+    })();
+</script>
+
 </section>
 @endsection

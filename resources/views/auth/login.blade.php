@@ -52,13 +52,34 @@
                 </div>
 
                 <div>
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Masukkan Password"
-                        class="w-full h-12 rounded-[3px] border border-gray-300 px-4 text-sm text-gray-700 placeholder:text-gray-400 focus:border-[#22a06b] focus:ring-2 focus:ring-[#22a06b]/20 outline-none"
-                        required
-                    >
+                    <div class="relative">
+                        <input
+                            type="password"
+                            name="password"
+                            id="login_password"
+                            placeholder="Masukkan Password"
+                            class="w-full h-12 rounded-[3px] border border-gray-300 px-4 pr-12 text-sm text-gray-700 placeholder:text-gray-400 focus:border-[#22a06b] focus:ring-2 focus:ring-[#22a06b]/20 outline-none"
+                            required
+                        >
+        <button
+            type="button"
+            data-toggle-password
+            data-target="login_password"
+            class="absolute inset-y-0 right-3 flex items-center text-[#66708a] hover:text-[#21a078]"
+            aria-label="Lihat password"
+        >
+            <svg class="icon-eye h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12 18 18.75 12 18.75 2.25 12 2.25 12Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+            <svg class="icon-eye-off hidden h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.58 10.58A2 2 0 0 0 12 14a2 2 0 0 0 1.42-.58" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.88 4.35A10.8 10.8 0 0 1 12 4.13c6 0 9.75 6.75 9.75 6.75a17.2 17.2 0 0 1-2.34 3.07" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.42 6.42C3.84 8.1 2.25 12 2.25 12S6 18.75 12 18.75c1.36 0 2.62-.35 3.75-.9" />
+            </svg>
+        </button>
+                    </div>
                     @error('password')
                         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                     @enderror
@@ -176,5 +197,27 @@
             }
         </script>
     @endif
+
+<script>
+    (function () {
+        document.querySelectorAll('[data-toggle-password]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const input = document.getElementById(button.dataset.target);
+                const eye = button.querySelector('.icon-eye');
+                const eyeOff = button.querySelector('.icon-eye-off');
+
+                if (!input) return;
+
+                const willShow = input.type === 'password';
+                input.type = willShow ? 'text' : 'password';
+
+                if (eye && eyeOff) {
+                    eye.classList.toggle('hidden', willShow);
+                    eyeOff.classList.toggle('hidden', !willShow);
+                }
+            });
+        });
+    })();
+</script>
 </body>
 </html>

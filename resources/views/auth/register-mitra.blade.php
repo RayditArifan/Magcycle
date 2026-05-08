@@ -59,16 +59,37 @@
                         value="{{ old('no_hp') }}"
                         class="h-13 w-full rounded border border-[#cfcfcf] bg-white px-4 text-base text-[#555] outline-none placeholder:text-[#888] focus:border-[#21a078]"
                     >
-                <div class="W-full">
-                    <input
-                        type="password"
-                        name="password"
-                        id="password"
-                        placeholder="Password minimal 6 karakter"
-                        class="h-13 w-full rounded border border-[#cfcfcf] bg-white px-4 text-base text-[#555] outline-none placeholder:text-[#888] focus:border-[#21a078]"
-                    >
 
-                </div>
+                    <div class="w-full">
+                        <div class="relative">
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                placeholder="Password"
+                                class="h-13 w-full rounded border border-[#cfcfcf] bg-white px-4 pr-12 text-base text-[#555] outline-none placeholder:text-[#888] focus:border-[#21a078]"
+                            >
+                        <button
+                            type="button"
+                            data-toggle-password
+                            data-target="password"
+                            class="absolute inset-y-0 right-3 flex items-center text-[#66708a] hover:text-[#21a078]"
+                            aria-label="Lihat password"
+                        >
+                            <svg class="icon-eye h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12 18 18.75 12 18.75 2.25 12 2.25 12Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                            <svg class="icon-eye-off hidden h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.58 10.58A2 2 0 0 0 12 14a2 2 0 0 0 1.42-.58" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.88 4.35A10.8 10.8 0 0 1 12 4.13c6 0 9.75 6.75 9.75 6.75a17.2 17.2 0 0 1-2.34 3.07" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.42 6.42C3.84 8.1 2.25 12 2.25 12S6 18.75 12 18.75c1.36 0 2.62-.35 3.75-.9" />
+                            </svg>
+                        </button>
+                        </div>
+                    </div>
+
                     <input
                         type="text"
                         name="alamat"
@@ -84,29 +105,28 @@
                             type="text"
                             name="provinsi"
                             id="provinsi"
-                            value="Jawa Timur"
-                            readonly
-                            class="h-[52px] w-full rounded border border-[#cfcfcf] bg-gray-100 px-4 text-base text-[#555] outline-none"
+                            placeholder="Provinsi"
+                            value="{{ old('provinsi') }}"
+                            class="h-13 w-full rounded border border-[#cfcfcf] bg-white px-4 text-base text-[#555] outline-none placeholder:text-[#888] focus:border-[#21a078]"
                         >
 
-                        <select
+                        <input
+                            type="text"
                             name="kab_kota"
                             id="kab_kota"
-                            class="h-[52px] w-full rounded border border-[#cfcfcf] bg-white px-4 text-base text-[#555] outline-none focus:border-[#21a078]"
+                            placeholder="Kab/Kota"
+                            value="{{ old('kab_kota') }}"
+                            class="h-13 w-full rounded border border-[#cfcfcf] bg-white px-4 text-base text-[#555] outline-none placeholder:text-[#888] focus:border-[#21a078]"
                         >
-                            <option value="">Kab/Kota</option>
-                            <option value="Jember" {{ old('kab_kota') === 'Jember' ? 'selected' : '' }}>Jember</option>
-                            <option value="Kediri" {{ old('kab_kota') === 'Kediri' ? 'selected' : '' }}>Kediri</option>
-                            <option value="Malang" {{ old('kab_kota') === 'Malang' ? 'selected' : '' }}>Malang</option>
-                        </select>
 
-                        <select
+                        <input
+                            type="text"
                             name="kecamatan"
                             id="kecamatan"
-                            class="h-[52px] w-full rounded border border-[#cfcfcf] bg-white px-4 text-base text-[#555] outline-none focus:border-[#21a078]"
+                            placeholder="Kecamatan"
+                            value="{{ old('kecamatan') }}"
+                            class="h-13 w-full rounded border border-[#cfcfcf] bg-white px-4 text-base text-[#555] outline-none placeholder:text-[#888] focus:border-[#21a078]"
                         >
-                            <option value="">Kecamatan</option>
-                        </select>
                     </div>
                 </div>
 
@@ -131,7 +151,7 @@
                 <circle cx="50" cy="68" r="5" fill="#ff1010"/>
             </svg>
 
-            <p id="popupInvalidMessage" class="text-3xl font-extrabold leading-tight text-[#66708a]">
+            <p class="text-3xl font-extrabold leading-tight text-[#66708a]">
                 Data tidak valid.<br>
                 Silahkan isi kembali
             </p>
@@ -166,225 +186,91 @@
         </div>
     </div>
 
-        <script>
-            const registerForm = document.getElementById('registerForm');
-            const dataKecamatan = {
-            Jember: [
-                'Sumbersari',
-                'Kaliwates',
-                'Patrang',
-                'Ajung',
-                'Ambulu',
-                'Arjasa',
-                'Balung',
-                'Bangsalsari',
-                'Jelbuk',
-                'Kalisat',
-                'Kencong',
-                'Mayang',
-                'Pakusari',
-                'Panti',
-                'Rambipuji',
-                'Sukorambi',
-                'Tanggul',
-                'Wuluhan'
-            ],
-            Kediri: [
-                'Mojoroto',
-                'Pesantren',
-                'Kota',
-                'Gampengrejo',
-                'Banyakan',
-                'Puncu',
-                'Ngasem',
-                'Semampir'
-            ],
-            Malang: [
-                'Klojen',
-                'Blimbing',
-                'Lowokwaru',
-                'Sukun',
-                'Kedungkandang'
-            ],
-        };
+    <script>
+        const registerForm = document.getElementById('registerForm');
 
-        const kabKotaSelect = document.getElementById('kab_kota');
-        const kecamatanSelect = document.getElementById('kecamatan');
+        registerForm.addEventListener('submit', function(event) {
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const noTelp = document.getElementById('no_hp').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const alamat = document.getElementById('alamat').value.trim();
+            const provinsi = document.getElementById('provinsi').value.trim();
+            const kabKota = document.getElementById('kab_kota').value.trim();
+            const kecamatan = document.getElementById('kecamatan').value.trim();
 
-        kabKotaSelect.addEventListener('change', function () {
-            const kabKota = this.value;
-
-            kecamatanSelect.innerHTML = '<option value="">Kecamatan</option>';
-
-            if (!kabKota || !dataKecamatan[kabKota]) {
-                return;
+            const noTelpValid = /^[0-9]+$/.test(noTelp);
+            const wilayahValid =
+                !/[0-9]/.test(provinsi) &&
+                !/[0-9]/.test(kabKota) &&
+                !/[0-9]/.test(kecamatan);
+            if (
+                username === '' ||
+                email === '' ||
+                noTelp === '' ||
+                password === '' ||
+                alamat === '' ||
+                provinsi === '' ||
+                kabKota === '' ||
+                kecamatan === '' ||
+                !noTelpValid
+                !wilayahValid
+            ) {
+                event.preventDefault();
+                showPopup('popupInvalid');
             }
+        });
 
-            dataKecamatan[kabKota].forEach(function (kecamatan) {
-                const option = document.createElement('option');
-                option.value = kecamatan;
-                option.textContent = kecamatan;
-                kecamatanSelect.appendChild(option);
+        function showPopup(id) {
+            const popup = document.getElementById(id);
+            popup.classList.remove('hidden');
+            popup.classList.add('flex');
+        }
+
+        function closePopup(popup) {
+            popup.classList.add('hidden');
+            popup.classList.remove('flex');
+        }
+
+        document.querySelectorAll('.popup').forEach(function(popup) {
+            popup.addEventListener('click', function() {
+                closePopup(popup);
             });
         });
 
-        const oldKabKota = @json(old('kab_kota'));
-        const oldKecamatan = @json(old('kecamatan'));
-        function loadKecamatan(kabKota, selectedKecamatan = '') {
-            kecamatanSelect.innerHTML = '<option value="">Kecamatan</option>';
+        @if (session('popup') === 'invalid')
+            showPopup('popupInvalid');
+        @endif
 
-            if (!kabKota || !dataKecamatan[kabKota]) {
-                return;
-            }
+        @if (session('popup') === 'registered')
+            showPopup('popupRegistered');
+        @endif
 
-            dataKecamatan[kabKota].forEach(function (kecamatan) {
-                const option = document.createElement('option');
-                option.value = kecamatan;
-                option.textContent = kecamatan;
+        @if (session('popup') === 'success')
+            showPopup('popupSuccess');
+        @endif
+    </script>
 
-                if (kecamatan === selectedKecamatan) {
-                    option.selected = true;
+<script>
+    (function () {
+        document.querySelectorAll('[data-toggle-password]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const input = document.getElementById(button.dataset.target);
+                const eye = button.querySelector('.icon-eye');
+                const eyeOff = button.querySelector('.icon-eye-off');
+
+                if (!input) return;
+
+                const willShow = input.type === 'password';
+                input.type = willShow ? 'text' : 'password';
+
+                if (eye && eyeOff) {
+                    eye.classList.toggle('hidden', willShow);
+                    eyeOff.classList.toggle('hidden', !willShow);
                 }
-
-                kecamatanSelect.appendChild(option);
             });
-        }
-
-        kabKotaSelect.addEventListener('change', function () {
-            loadKecamatan(this.value);
         });
-
-        if (oldKabKota) {
-            kabKotaSelect.value = oldKabKota;
-            loadKecamatan(oldKabKota, oldKecamatan);
-        }
-
-            registerForm.addEventListener('submit', function(event) {
-                const username = document.getElementById('username').value.trim();
-                const email = document.getElementById('email').value.trim();
-                const noHp = document.getElementById('no_hp').value.trim();
-                const password = document.getElementById('password').value.trim();
-                const alamat = document.getElementById('alamat').value.trim();
-                const provinsi = document.getElementById('provinsi').value.trim();
-                const kabKota = document.getElementById('kab_kota').value.trim();
-                const kecamatan = document.getElementById('kecamatan').value.trim();
-
-                const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-                const noHpValid = /^[0-9]+$/.test(noHp);
-                const passwordValid = password.length >= 6;
-
-                const wilayahValid =
-                    !/[0-9]/.test(provinsi) &&
-                    !/[0-9]/.test(kabKota) &&
-                    !/[0-9]/.test(kecamatan);
-
-                if (
-                    username === '' ||
-                    email === '' ||
-                    noHp === '' ||
-                    password === '' ||
-                    alamat === '' ||
-                    provinsi === '' ||
-                    kabKota === '' ||
-                    kecamatan === ''
-                ) {
-                    event.preventDefault();
-                    showInvalidPopup('Semua field<br>wajib diisi');
-                    return;
-                }
-
-                if (!emailValid) {
-                    event.preventDefault();
-                    showInvalidPopup('Email tidak valid.<br>Masukkan email yang dapat dihubungi');
-                    return;
-                }
-
-                if (!noHpValid) {
-                    event.preventDefault();
-                    showInvalidPopup('Nomor telepon<br>hanya boleh angka');
-                    return;
-                }
-
-                if (!passwordValid) {
-                    event.preventDefault();
-                    showInvalidPopup('Password minimal<br>6 karakter');
-                    return;
-                }
-
-                if (!wilayahValid) {
-                    event.preventDefault();
-                    showInvalidPopup('Data kota/kabupaten/provinsi<br>tidak valid');
-                    return;
-                }
-            });
-
-            function showInvalidPopup(message) {
-                const popup = document.getElementById('popupInvalid');
-                const messageBox = document.getElementById('popupInvalidMessage');
-
-                messageBox.innerHTML = message;
-
-                popup.style.display = '';
-                popup.classList.remove('hidden');
-                popup.classList.add('flex');
-            }
-
-            function showPopup(id) {
-                const popup = document.getElementById(id);
-
-                popup.style.display = '';
-                popup.classList.remove('hidden');
-                popup.classList.add('flex');
-            }
-
-            function closePopup(popup) {
-                popup.classList.add('hidden');
-                popup.classList.remove('flex');
-                popup.style.display = '';
-            }
-
-            function closePopup(popup) {
-                popup.classList.add('hidden');
-                popup.style.display = 'none';
-            }
-
-            document.querySelectorAll('.popup').forEach(function(popup) {
-                popup.addEventListener('click', function() {
-                    closePopup(popup);
-                });
-            });
-
-            @if (session('popup') === 'required')
-                showInvalidPopup('Semua field<br>wajib diisi');
-            @endif
-
-            @if (session('popup') === 'email_invalid')
-                showInvalidPopup('Email tidak valid.<br>Masukkan email yang dapat dihubungi');
-            @endif
-
-            @if (session('popup') === 'phone_invalid')
-                showInvalidPopup('Nomor telepon<br>hanya boleh angka');
-            @endif
-
-            @if (session('popup') === 'password_invalid')
-                showInvalidPopup('Password minimal<br>6 karakter');
-            @endif
-
-            @if (session('popup') === 'wilayah_invalid')
-                showInvalidPopup('Data kota/kabupaten/provinsi<br>tidak valid');
-            @endif
-
-            @if (session('popup') === 'invalid')
-                showInvalidPopup('Data tidak valid.<br>Silahkan isi kembali');
-            @endif
-
-            @if (session('popup') === 'registered')
-                showPopup('popupRegistered');
-            @endif
-
-            @if (session('popup') === 'success')
-                showPopup('popupSuccess');
-            @endif
-        </script>
+    })();
+</script>
 </body>
 </html>

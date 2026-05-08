@@ -386,8 +386,9 @@
                 const jenis = this.dataset.jenis;
                 const jumlah = this.dataset.jumlah;
                 const tanggal = this.dataset.tanggal;
+                const updateStockUrl = @json(route('admin.stok.update', ['id_stok' => '__ID__']));
 
-                editStockForm.action = `/admin/manajemen-stok/${id}/update`;
+                editStockForm.action = updateStockUrl.replace('__ID__', id);
                 document.getElementById('edit_jenis_produk').value = jenis;
                 document.getElementById('edit_jumlah_stok').value = jumlah;
                 document.getElementById('edit_tanggal_input').value = "{{ date('Y-m-d') }}";
