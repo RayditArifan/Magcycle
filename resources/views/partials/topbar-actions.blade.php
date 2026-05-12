@@ -66,7 +66,6 @@
                     </svg>
                     <span>Logout</span>
                 </button>
-            </form>
         </div>
     </div>
 </div>

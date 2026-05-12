@@ -47,9 +47,24 @@
                                             {{ $panduan->judul }}
                                         </h3>
 
+                                        @if (!empty($panduan->deskripsi))
+                                            <p class="mb-4 text-[17px] font-semibold leading-relaxed">
+                                                {{ $panduan->deskripsi }}
+                                            </p>
+                                        @endif
+
                                         @if (!empty($panduan->video_panduan))
-                                            <video controls class="w-full max-w-[760px] rounded-xl bg-black shadow-sm">
-                                                <source src="{{ asset('assets/video/' . $panduan->video_panduan) }}">
+                                            @php
+                                                $videoPath = $panduan->video_panduan;
+                                                $videoUrl = \Illuminate\Support\Str::startsWith($videoPath, ['http://', 'https://'])
+                                                    ? $videoPath
+                                                    : asset('storage/' . $videoPath);
+                                                $videoExtension = strtolower(pathinfo($videoPath, PATHINFO_EXTENSION));
+                                                $videoMime = $videoExtension === 'webm' ? 'video/webm' : 'video/mp4';
+                                            @endphp
+
+                                            <video controls preload="metadata" class="w-full max-w-[640px] rounded-xl bg-black shadow-sm">
+                                                <source src="{{ $videoUrl }}" type="{{ $videoMime }}">
                                                 Browser kamu tidak mendukung video.
                                             </video>
                                         @else

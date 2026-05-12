@@ -8,20 +8,6 @@ use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
-    /* Helper */
-
-    private function splitAlamat($alamat)
-    {
-        $parts = array_map('trim', explode(',', $alamat ?? ''));
-
-        return [
-            'alamat' => $parts[0] ?? '',
-            'kecamatan' => $parts[1] ?? '',
-            'kab_kota' => $parts[2] ?? '',
-            'provinsi' => $parts[3] ?? '',
-        ];
-    }
-
     /* Profile Admin */
 
     public function adminIndex()
@@ -31,8 +17,12 @@ class ProfileController extends Controller
                 ->with('login_error', 'Silakan login sebagai admin terlebih dahulu.');
         }
 
-        $admin = DB::table('data_admin')
-            ->where('id', session('user_id'))
+        $admin = DB::table('data_admin as da')
+            ->leftJoin('kecamatan as kc',  'da.id_kecamatan', '=', 'kc.id_kecamatan')
+            ->leftJoin('kab_kota as kt',   'kc.id_kota',      '=', 'kt.id_kota')
+            ->leftJoin('provinsi as pv',   'kt.id_provinsi',  '=', 'pv.id_provinsi')
+            ->select('da.*', 'kc.nama_kecamatan', 'kt.nama_kab_kota', 'pv.nama_provinsi', 'kc.id_kota')
+            ->where('da.id', session('user_id'))
             ->first();
 
         if (!$admin) {
@@ -40,9 +30,8 @@ class ProfileController extends Controller
                 ->with('login_error', 'Data admin tidak ditemukan.');
         }
 
-        return view('admin.profile', [
+        return view('admin.profile-admin.profile', [
             'profile' => $admin,
-            'alamatParts' => $this->splitAlamat($admin->alamat),
             'notificationCount' => 1,
         ]);
     }
@@ -54,8 +43,12 @@ class ProfileController extends Controller
                 ->with('login_error', 'Silakan login sebagai admin terlebih dahulu.');
         }
 
-        $admin = DB::table('data_admin')
-            ->where('id', session('user_id'))
+        $admin = DB::table('data_admin as da')
+            ->leftJoin('kecamatan as kc', 'da.id_kecamatan', '=', 'kc.id_kecamatan')
+            ->leftJoin('kab_kota as kt',  'kc.id_kota',      '=', 'kt.id_kota')
+            ->leftJoin('provinsi as pv',  'kt.id_provinsi',  '=', 'pv.id_provinsi')
+            ->select('da.*', 'kc.nama_kecamatan', 'kt.nama_kab_kota', 'pv.nama_provinsi', 'kc.id_kota')
+            ->where('da.id', session('user_id'))
             ->first();
 
         if (!$admin) {
@@ -63,9 +56,15 @@ class ProfileController extends Controller
                 ->with('login_error', 'Data admin tidak ditemukan.');
         }
 
-        return view('admin.profile-edit', [
-            'profile' => $admin,
-            'alamatParts' => $this->splitAlamat($admin->alamat),
+        $kabKotaList = DB::table('kab_kota')->orderBy('nama_kab_kota')->get();
+        $kecamatanList = $admin->id_kota
+            ? DB::table('kecamatan')->where('id_kota', $admin->id_kota)->orderBy('nama_kecamatan')->get()
+            : collect();
+
+        return view('admin.profile-admin.profile-edit', [
+            'profile'       => $admin,
+            'kabKotaList'   => $kabKotaList,
+            'kecamatanList' => $kecamatanList,
             'notificationCount' => 1,
         ]);
     }
@@ -91,9 +90,7 @@ class ProfileController extends Controller
             trim($request->no_hp ?? '') === '' ||
             trim($request->old_password ?? '') === '' ||
             trim($request->alamat ?? '') === '' ||
-            trim($request->provinsi ?? '') === '' ||
-            trim($request->kab_kota ?? '') === '' ||
-            trim($request->kecamatan ?? '') === ''
+            !$request->filled('id_kecamatan')
         ) {
             return back()
                 ->withInput()
@@ -124,27 +121,12 @@ class ProfileController extends Controller
                 ->with('error_popup', 'Password baru minimal 6 karakter');
         }
 
-        if (
-            preg_match('/[0-9]/', $request->provinsi) ||
-            preg_match('/[0-9]/', $request->kab_kota) ||
-            preg_match('/[0-9]/', $request->kecamatan)
-        ) {
-            return back()
-                ->withInput()
-                ->with('error_popup', 'Data kota/kabupaten/provinsi tidak valid');
-        }
-
-        $alamatGabungan = implode(', ', [
-            $request->alamat,
-            $request->kecamatan,
-            $request->kab_kota,
-            $request->provinsi,
-        ]);
 
         $data = [
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
-            'alamat' => $alamatGabungan,
+            'email'         => $request->email,
+            'no_hp'         => $request->no_hp,
+            'alamat'        => $request->alamat,
+            'id_kecamatan'  => $request->id_kecamatan,
         ];
 
         if ($request->filled('password')) {
@@ -168,8 +150,12 @@ class ProfileController extends Controller
                 ->with('login_error', 'Silakan login sebagai mitra terlebih dahulu.');
         }
 
-        $mitra = DB::table('data_mitra')
-            ->where('id_mitra', session('user_id'))
+        $mitra = DB::table('data_mitra as dm')
+            ->leftJoin('kecamatan as kc', 'dm.id_kecamatan', '=', 'kc.id_kecamatan')
+            ->leftJoin('kab_kota as kt',  'kc.id_kota',      '=', 'kt.id_kota')
+            ->leftJoin('provinsi as pv',  'kt.id_provinsi',  '=', 'pv.id_provinsi')
+            ->select('dm.*', 'kc.nama_kecamatan', 'kt.nama_kab_kota', 'pv.nama_provinsi', 'kc.id_kota')
+            ->where('dm.id_mitra', session('user_id'))
             ->first();
 
         if (!$mitra) {
@@ -179,7 +165,6 @@ class ProfileController extends Controller
 
         return view('mitra.profile', [
             'mitra' => $mitra,
-            'alamatParts' => $this->splitAlamat($mitra->alamat),
             'notificationCount' => 1,
         ]);
     }
@@ -191,8 +176,12 @@ class ProfileController extends Controller
                 ->with('login_error', 'Silakan login sebagai mitra terlebih dahulu.');
         }
 
-        $mitra = DB::table('data_mitra')
-            ->where('id_mitra', session('user_id'))
+        $mitra = DB::table('data_mitra as dm')
+            ->leftJoin('kecamatan as kc', 'dm.id_kecamatan', '=', 'kc.id_kecamatan')
+            ->leftJoin('kab_kota as kt',  'kc.id_kota',      '=', 'kt.id_kota')
+            ->leftJoin('provinsi as pv',  'kt.id_provinsi',  '=', 'pv.id_provinsi')
+            ->select('dm.*', 'kc.nama_kecamatan', 'kt.nama_kab_kota', 'pv.nama_provinsi', 'kc.id_kota')
+            ->where('dm.id_mitra', session('user_id'))
             ->first();
 
         if (!$mitra) {
@@ -200,9 +189,15 @@ class ProfileController extends Controller
                 ->with('login_error', 'Data mitra tidak ditemukan.');
         }
 
+        $kabKotaList = DB::table('kab_kota')->orderBy('nama_kab_kota')->get();
+        $kecamatanList = $mitra->id_kota
+            ? DB::table('kecamatan')->where('id_kota', $mitra->id_kota)->orderBy('nama_kecamatan')->get()
+            : collect();
+
         return view('mitra.profile-edit', [
-            'mitra' => $mitra,
-            'alamatParts' => $this->splitAlamat($mitra->alamat),
+            'mitra'         => $mitra,
+            'kabKotaList'   => $kabKotaList,
+            'kecamatanList' => $kecamatanList,
             'notificationCount' => 1,
         ]);
     }
@@ -224,15 +219,13 @@ class ProfileController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:100',
-            'email' => 'required|email|max:150',
-            'no_hp' => 'required|regex:/^[0-9]+$/|max:20',
+            'username'     => 'required|string|max:100',
+            'email'        => 'required|email|max:150',
+            'no_hp'        => 'required|regex:/^[0-9]+$/|max:20',
             'old_password' => 'required|string',
-            'password' => 'nullable|string|min:6|max:100',
-            'alamat' => 'required|string|max:255',
-            'provinsi' => 'required|string|max:100',
-            'kab_kota' => 'required|string|max:100',
-            'kecamatan' => 'required|string|max:100',
+            'password'     => 'nullable|string|min:6|max:100',
+            'alamat'       => 'required|string|max:255',
+            'id_kecamatan' => 'required|exists:kecamatan,id_kecamatan',
         ]);
 
         if ($validator->fails()) {
@@ -270,18 +263,12 @@ class ProfileController extends Controller
                 ->with('popup', 'password_min');
         }
 
-        $alamatGabungan = implode(', ', [
-            $request->alamat,
-            $request->kecamatan,
-            $request->kab_kota,
-            $request->provinsi,
-        ]);
-
         $data = [
-            'username' => $request->username,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
-            'alamat' => $alamatGabungan,
+            'username'      => $request->username,
+            'email'         => $request->email,
+            'no_hp'         => $request->no_hp,
+            'alamat'        => $request->alamat,
+            'id_kecamatan'  => $request->id_kecamatan,
         ];
 
         if ($request->filled('password')) {
@@ -321,7 +308,7 @@ class ProfileController extends Controller
             ->orderBy('data_mitra.id_mitra', 'asc')
             ->paginate(8);
 
-        return view('admin.mitra-profiles', [
+        return view('admin.profile-admin.mitra-profiles', [
             'mitras' => $mitras,
             'notificationCount' => 1,
         ]);
@@ -359,7 +346,7 @@ class ProfileController extends Controller
             ->orderBy('id_status')
             ->get();
 
-        return view('admin.mitra-profiles-detail', [
+        return view('admin.profile-admin.mitra-profiles-detail', [
             'mitra' => $mitra,
             'statuses' => $statuses,
             'notificationCount' => 1,

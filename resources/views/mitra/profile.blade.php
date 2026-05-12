@@ -53,16 +53,16 @@
                         <input value="********" disabled class="h-[42px] w-[300px] rounded-[10px] border border-[#555] px-3 text-[#888]">
 
                         <label>Alamat</label>
-                        <input value="{{ $alamatParts['alamat'] }}" disabled class="h-[42px] w-[300px] rounded-[10px] border border-[#555] px-3 text-[#888]">
+                        <input value="{{ $mitra->alamat }}" disabled class="h-[42px] w-[300px] rounded-[10px] border border-[#555] px-3 text-[#888]">
 
                         <label>Provinsi</label>
-                        <input value="{{ $alamatParts['provinsi'] }}" disabled class="h-[42px] w-[300px] rounded-[10px] border border-[#555] px-3 text-[#888]">
+                        <input value="{{ $mitra->nama_provinsi ?? '' }}" disabled class="h-[42px] w-[300px] rounded-[10px] border border-[#555] px-3 text-[#888]">
 
                         <label>Kabupaten/Kota</label>
-                        <input value="{{ $alamatParts['kab_kota'] }}" disabled class="h-[42px] w-[300px] rounded-[10px] border border-[#555] px-3 text-[#888]">
+                        <input value="{{ $mitra->nama_kab_kota ?? '' }}" disabled class="h-[42px] w-[300px] rounded-[10px] border border-[#555] px-3 text-[#888]">
 
                         <label>Kecamatan</label>
-                        <input value="{{ $alamatParts['kecamatan'] }}" disabled class="h-[42px] w-[300px] rounded-[10px] border border-[#555] px-3 text-[#888]">
+                        <input value="{{ $mitra->nama_kecamatan ?? '' }}" disabled class="h-[42px] w-[300px] rounded-[10px] border border-[#555] px-3 text-[#888]">
                     </div>
                 </section>
             </main>

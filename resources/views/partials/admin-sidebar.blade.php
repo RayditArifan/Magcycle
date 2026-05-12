@@ -53,8 +53,9 @@
         </div>
 
         <div class="space-y-1">
-            <a href="#"
-               class="flex items-center gap-4 px-10 py-4 text-[17px] font-medium text-white hover:bg-white/10 transition">
+            <a href="{{ route('admin.panduan-setor.index') }}"
+               class="flex items-center gap-4 px-10 py-4 text-[17px] font-medium transition
+               {{ request()->routeIs('admin.panduan-setor.*') ? 'bg-[#37c793] text-white' : 'text-white hover:bg-white/10' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0" fill="none"
                      viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -65,8 +66,9 @@
                 <span>Panduan Setor</span>
             </a>
 
-            <a href="#"
-               class="flex items-center gap-4 px-10 py-4 text-[17px] font-medium text-white hover:bg-white/10 transition">
+            <a href="{{ route('admin.pengambilan-sampah.index') }}"
+               class="flex items-center gap-4 px-10 py-4 text-[17px] font-medium transition
+               {{ request()->routeIs('admin.pengambilan-sampah.*') ? 'bg-[#37c793] text-white' : 'text-white hover:bg-white/10' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0" fill="none"
                      viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -85,7 +87,7 @@
                 <span>Manajemen Stok</span>
             </a>
 
-            <a href="#"
+            <a href="{{ route('admin.siklus-maggot.index') }}"
                class="flex items-center gap-4 px-10 py-4 text-[17px] font-medium text-white hover:bg-white/10 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0" fill="none"
                      viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

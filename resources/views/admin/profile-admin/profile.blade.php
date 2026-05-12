@@ -34,19 +34,19 @@
                 class="h-[42px] w-full max-w-[360px] rounded-[10px] border border-[#555] bg-white px-4 text-[#888]">
 
             <label class="text-[#333]">Alamat</label>
-            <input value="{{ $alamatParts['alamat'] ?? '' }}" disabled
+            <input value="{{ $profile->alamat ?? '' }}" disabled
                 class="h-[42px] w-full max-w-[360px] rounded-[10px] border border-[#555] bg-white px-4 text-[#888]">
 
             <label class="text-[#333]">Provinsi</label>
-            <input value="{{ $alamatParts['provinsi'] ?? '' }}" disabled
+            <input value="{{ $profile->nama_provinsi ?? '' }}" disabled
                 class="h-[42px] w-full max-w-[360px] rounded-[10px] border border-[#555] bg-white px-4 text-[#888]">
 
             <label class="text-[#333]">Kabupaten/Kota</label>
-            <input value="{{ $alamatParts['kab_kota'] ?? '' }}" disabled
+            <input value="{{ $profile->nama_kab_kota ?? '' }}" disabled
                 class="h-[42px] w-full max-w-[360px] rounded-[10px] border border-[#555] bg-white px-4 text-[#888]">
 
             <label class="text-[#333]">Kecamatan</label>
-            <input value="{{ $alamatParts['kecamatan'] ?? '' }}" disabled
+            <input value="{{ $profile->nama_kecamatan ?? '' }}" disabled
                 class="h-[42px] w-full max-w-[360px] rounded-[10px] border border-[#555] bg-white px-4 text-[#888]">
         </div>
     </div>

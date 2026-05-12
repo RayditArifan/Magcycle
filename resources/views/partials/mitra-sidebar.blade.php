@@ -52,7 +52,7 @@
         </div>
 
         <div class="space-y-1">
-            <a href="#"
+            <a href="{{ route('mitra.pengambilan-sampah.index') }}"
                class="flex items-center gap-4 px-10 py-4 text-[17px] font-medium text-white hover:bg-white/10 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0" fill="none"
                      viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
