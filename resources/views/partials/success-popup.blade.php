@@ -6,8 +6,12 @@
             </div>
 
             <h2 class="text-[34px] font-extrabold leading-tight text-[#667089]">
-                Perubahan berhasil<br>
-                disimpan
+                @if(session('success_popup') && session('success_popup') !== 'true')
+                    {{ session('success_popup') }}
+                @else
+                    Perubahan berhasil<br>
+                    disimpan
+                @endif
             </h2>
         </div>
     </div>

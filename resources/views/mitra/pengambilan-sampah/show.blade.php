@@ -116,7 +116,7 @@
                         </div>
                     </section>
 
-                    <div id="cancelModal" class="fixed inset-0 z-[9998] hidden items-center justify-center bg-black/10">
+                    <div id="cancelModal" class="fixed inset-0 z-[9998] hidden items-center justify-center bg-black/45">
                         <div class="relative w-[390px] bg-white px-10 py-6 text-center shadow-xl">
                             <p class="text-[22px] font-bold leading-tight text-[#66708a]">
                                 Apakah anda yakin ingin<br>membatalkan jadwal pengambilan<br>sampah?

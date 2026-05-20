@@ -93,7 +93,6 @@
         </div>
     </section>
 
-    {{-- Modal Buat Panduan --}}
     <div id="createPanduanModal" class="fixed inset-0 z-[9998] hidden items-center justify-center bg-black/10">
         <div class="relative w-[680px] rounded-md border border-[#252525] bg-white px-32 py-12 shadow-xl">
             <button type="button" id="closeCreatePanduanModal" class="absolute right-5 top-4 text-[#4a4a4a]">
@@ -250,7 +249,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 3h11l3 3v15H5V3Zm4 0v6h7V3M8 15h8" />
                         </svg>
-                        UNGGAH
+                        SIMPAN
                     </button>
                 </div>
             </form>

@@ -159,6 +159,24 @@ class PengambilanSampahController extends Controller
                 'updated_at' => now(),
             ]);
 
+        $jadwalData = DB::table('jadwal_pengambilan_sampah')->where('id', $jadwal)->first();
+        if ($jadwalData) {
+            $catatanCount = DB::table('jadwal_pengambilan_sampah')
+                ->where('id_mitra', $jadwalData->id_mitra)
+                ->whereNotNull('catatan')
+                ->where('catatan', '!=', '')
+                ->count();
+
+            if ($catatanCount > 2) {
+                $bannedStatus = DB::table('status_akun')->where('status_akun', 'banned')->first();
+                if ($bannedStatus) {
+                    DB::table('data_mitra')
+                        ->where('id_mitra', $jadwalData->id_mitra)
+                        ->update(['id_status' => $bannedStatus->id_status]);
+                }
+            }
+        }
+
         return redirect()
             ->route('admin.pengambilan-sampah.riwayat')
             ->with('success_popup', 'Catatan berhasil ditambahkan');

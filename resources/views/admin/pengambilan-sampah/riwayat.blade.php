@@ -102,15 +102,18 @@
                                             {{ $jadwal->catatan ?: '-' }}
                                         </p>
 
-                                        <button
-                                            type="button"
-                                            data-open-catatan
-                                            data-action="{{ route('admin.pengambilan-sampah.simpan-catatan', $jadwal->id) }}"
-                                            data-catatan="{{ e($jadwal->catatan ?? '') }}"
-                                            class="shrink-0 rounded-md border border-[#4a4a4a] px-4 py-2 text-[11px] font-medium leading-tight text-[#252525] transition hover:bg-white"
-                                        >
-                                            Beri<br>Catatan
-                                        </button>
+                                        @if (!in_array($jadwal->status_text, ['ditolak', 'batal', 'dibatalkan']) && empty($jadwal->catatan))
+                                            <button
+                                                type="button"
+                                                data-open-catatan
+                                                data-action="{{ route('admin.pengambilan-sampah.simpan-catatan', $jadwal->id) }}"
+                                                data-catatan="{{ e($jadwal->catatan ?? '') }}"
+                                                class="shrink-0 rounded-md border border-[#4a4a4a] px-4 py-2 text-[11px] font-medium leading-tight text-[#252525] transition hover:bg-white"
+                                            >
+                                                Beri<br>Catatan
+                                            </button>
+                                        @endif
+
                                     </div>
                                 </td>
                             </tr>

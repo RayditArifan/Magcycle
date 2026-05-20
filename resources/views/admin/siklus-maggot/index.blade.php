@@ -4,7 +4,39 @@
 
 @section('content')
     <section class="px-8 py-8 md:px-10">
-        <div class="overflow-hidden rounded-[18px] border border-[#1fa16f] bg-white">
+        <form method="GET" action="{{ route('admin.siklus-maggot.index') }}" class="mb-4 flex items-center gap-3">
+            <div class="flex h-[46px] flex-1 items-center rounded-xl border border-[#4a4a4a] bg-white px-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mr-4 h-6 w-6 shrink-0 text-[#4a4a4a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" />
+                </svg>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Cari nama batch"
+                    class="h-[34px] w-full rounded-lg border border-[#7a7a7a] px-4 text-[16px] text-[#4a4a4a] outline-none placeholder:text-[#8a8a8a]"
+                >
+            </div>
+
+            <button
+                type="submit"
+                class="h-[46px] rounded-lg bg-[#1fa16f] px-6 text-[15px] font-bold text-white transition hover:bg-[#178a5d]"
+            >
+                Cari
+            </button>
+
+            @if (request()->filled('search'))
+                <a
+                    href="{{ route('admin.siklus-maggot.index') }}"
+                    class="flex h-[46px] items-center rounded-lg border border-[#4a4a4a] px-5 text-[15px] font-semibold text-[#4a4a4a] transition hover:bg-[#e8f6f1]"
+                >
+                    Reset
+                </a>
+            @endif
+        </form>
+
+    <div class="overflow-hidden rounded-[18px] border border-[#1fa16f] bg-white">
             <div class="flex items-center justify-between border-b border-[#1fa16f] px-10 py-5">
                 <h2 class="text-[24px] font-semibold text-[#4a4a4a]">
                     Monitoring Siklus Maggot
@@ -48,13 +80,17 @@
                                 </td>
                                 <td class="px-10 py-7 text-center">{{ $siklus->hari_ke }}</td>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="px-10 py-12 text-center text-[18px] text-[#4a4a4a]">
-                                    Data siklus maggot belum tersedia.
-                                </td>
-                            </tr>
-                        @endforelse
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="px-10 py-12 text-center text-[18px] text-[#4a4a4a]">
+                                        @if (request()->filled('search'))
+                                            Batch dengan kata kunci "{{ request('search') }}" tidak ditemukan.
+                                        @else
+                                            Data siklus maggot belum tersedia.
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforelse
                     </tbody>
                 </table>
             </div>

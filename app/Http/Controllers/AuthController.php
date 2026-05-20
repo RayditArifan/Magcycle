@@ -28,9 +28,11 @@ class AuthController extends Controller
             ->first();
 
         if ($admin && $request->password === $admin->password) {
+            $request->session()->regenerate();
             Session::put('user_id', $admin->id);
             Session::put('username', $admin->username);
             Session::put('role', 'admin');
+            Session::save();
 
             return redirect()->route('dashboard');
         }
@@ -40,9 +42,11 @@ class AuthController extends Controller
             ->first();
 
         if ($mitra && $request->password === $mitra->password) {
+            $request->session()->regenerate();
             Session::put('user_id', $mitra->id_mitra);
             Session::put('username', $mitra->username);
             Session::put('role', 'mitra');
+            Session::save();
 
             return redirect('/beranda');
         }

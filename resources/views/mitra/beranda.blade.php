@@ -16,7 +16,7 @@
             <header class="border-b border-[#c8c8c8] bg-white">
                 <div class="flex items-center justify-between" style="height: 70px; padding-left: 50px; padding-right: 50px;">
                     <h1 class="text-[38px] font-medium text-[#4a4a4a]">
-                        Welcome back, {{ $username }}!
+                        Selamat datang, {{ $username }}!
                     </h1>
 
                     @include('partials.mitra-topbar-actions', [

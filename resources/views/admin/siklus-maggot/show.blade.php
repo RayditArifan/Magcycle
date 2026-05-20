@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="grid grid-cols-[180px_1fr] items-center gap-5">
-                    <p class="font-medium">Status</p>
+                    <p class="font-medium">Status Terbaru</p>
                     <div>
                         @include('partials.status-badge', ['status' => $siklus->status_label])
                     </div>
@@ -40,36 +40,56 @@
 
             <div class="mt-14 overflow-hidden rounded-xl border border-[#1fa16f] bg-white">
                 <div class="overflow-x-auto">
-                    <table class="w-full min-w-[900px] text-left text-[#4a4a4a]">
+                    <table class="w-full min-w-[1050px] text-left text-[#4a4a4a]">
                         <thead>
                             <tr class="text-[18px] font-semibold">
-                                <th class="px-10 py-5 text-center font-semibold">Jumlah Hidup</th>
-                                <th class="px-10 py-5 text-center font-semibold">Tanggal</th>
-                                <th class="px-10 py-5 text-center font-semibold">Kasgot</th>
-                                <th class="px-10 py-5 text-center font-semibold">Hasil Panen</th>
+                                <th class="px-8 py-5 text-center font-semibold">Hari ke-</th>
+                                <th class="px-8 py-5 text-center font-semibold">Tanggal</th>
+                                <th class="px-8 py-5 text-center font-semibold">Status</th>
+                                <th class="px-8 py-5 text-center font-semibold">Jumlah Hidup</th>
+                                <th class="px-8 py-5 text-center font-semibold">Kasgot</th>
+                                <th class="px-8 py-5 text-center font-semibold">Hasil Panen</th>
                             </tr>
                         </thead>
                         <tbody class="text-[18px]">
-                            <tr class="bg-[#93d1bd]">
-                                <td class="px-10 py-7 text-center">
-                                    {{ rtrim(rtrim(number_format((float) ($siklus->jumlah_hidup ?? 0), 2, ',', '.'), '0'), ',') }} kg
-                                </td>
-                                <td class="px-10 py-7 text-center">
-                                    {{ $siklus->waktu_update ? \Carbon\Carbon::parse($siklus->waktu_update)->translatedFormat('d F Y') : '-' }}
-                                </td>
-                                <td class="px-10 py-7 text-center">
-                                    {{ rtrim(rtrim(number_format((float) ($siklus->jumlah_kasgot ?? 0), 2, ',', '.'), '0'), ',') }} kg
-                                </td>
-                                <td class="px-10 py-7 text-center">
-                                    {{ rtrim(rtrim(number_format((float) ($siklus->hasil_panen ?? 0), 2, ',', '.'), '0'), ',') }} kg
-                                </td>
-                            </tr>
+                            @forelse ($detailSiklus as $detail)
+                                <tr class="{{ $loop->last ? 'bg-[#7fcdb3]' : ($loop->odd ? 'bg-[#93d1bd]' : 'bg-white') }}">
+                                    <td class="px-8 py-7 text-center">
+                                        {{ $detail->hari_ke }}
+                                    </td>
+                                    <td class="px-8 py-7 text-center">
+                                        {{ $detail->tanggal_monitoring ? \Carbon\Carbon::parse($detail->tanggal_monitoring)->translatedFormat('d F Y') : '-' }}
+                                    </td>
+                                    <td class="px-8 py-7 text-center">
+                                        @include('partials.status-badge', ['status' => $detail->status_label])
+                                    </td>
+                                    <td class="px-8 py-7 text-center">
+                                        {{ rtrim(rtrim(number_format((float) ($detail->jumlah_hidup ?? 0), 2, ',', '.'), '0'), ',') }} kg
+                                    </td>
+                                    <td class="px-8 py-7 text-center">
+                                        {{ rtrim(rtrim(number_format((float) ($detail->jumlah_kasgot ?? 0), 2, ',', '.'), '0'), ',') }} kg
+                                    </td>
+                                    <td class="px-8 py-7 text-center">
+                                        {{ rtrim(rtrim(number_format((float) ($detail->hasil_panen ?? 0), 2, ',', '.'), '0'), ',') }} kg
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-8 py-10 text-center text-[18px] text-[#4a4a4a]">
+                                        Data detail siklus belum tersedia.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="mt-14 flex justify-end">
+            <div class="mt-5 text-sm text-[#66708a]">
+                Data terbaru adalah data tanggal {{ $detailTerbaru?->tanggal_monitoring ? \Carbon\Carbon::parse($detailTerbaru->tanggal_monitoring)->translatedFormat('d F Y') : '-' }}.
+            </div>
+
+            <div class="mt-10 flex justify-end">
                 <button
                     type="button"
                     id="openEditModal"
@@ -91,7 +111,9 @@
 
             <div class="text-center">
                 <h3 class="text-[28px] font-bold text-[#4a4a4a]">Edit Siklus Maggot</h3>
-                <p class="mt-3 text-[18px] text-[#66708a]">Isi form berikut untuk mengedit data siklus maggot</p>
+                <p class="mt-3 text-[18px] text-[#66708a]">
+                    Form ini hanya memperbarui data terbaru
+                </p>
             </div>
 
             <form method="POST" action="{{ route('admin.siklus-maggot.update', $siklus->id) }}" class="mt-10 space-y-5">
@@ -108,7 +130,7 @@
                     >
                         <option value="">Pilih status</option>
                         @foreach ($statusOptions as $status)
-                            <option value="{{ $status }}" @selected(old('_form') === 'edit' ? old('status') === $status : $siklus->status_label === $status)>
+                            <option value="{{ $status }}" @selected(old('_form') === 'edit' ? old('status') === $status : ($detailTerbaru->status_label ?? $siklus->status_label) === $status)>
                                 {{ $status }}
                             </option>
                         @endforeach
@@ -128,7 +150,7 @@
                         type="number"
                         step="0.1"
                         min="0"
-                        value="{{ old('_form') === 'edit' ? old('jumlah_hidup') : ($siklus->jumlah_hidup ?? 0) }}"
+                        value="{{ old('_form') === 'edit' ? old('jumlah_hidup') : ($detailTerbaru->jumlah_hidup ?? 0) }}"
                         placeholder="Contoh : 3 kg"
                         class="h-[50px] w-full rounded border border-[#cfcfcf] px-5 text-[16px] text-[#4a4a4a] outline-none placeholder:text-[#8a8a8a] focus:border-[#1fa16f]"
                     >
@@ -147,7 +169,7 @@
                         type="number"
                         step="0.1"
                         min="0"
-                        value="{{ old('_form') === 'edit' ? old('jumlah_kasgot') : ($siklus->jumlah_kasgot ?? 0) }}"
+                        value="{{ old('_form') === 'edit' ? old('jumlah_kasgot') : ($detailTerbaru->jumlah_kasgot ?? 0) }}"
                         placeholder="Contoh : 3 kg"
                         class="h-[50px] w-full rounded border border-[#cfcfcf] px-5 text-[16px] text-[#4a4a4a] outline-none placeholder:text-[#8a8a8a] focus:border-[#1fa16f]"
                     >
@@ -166,7 +188,7 @@
                         type="number"
                         step="0.1"
                         min="0"
-                        value="{{ old('_form') === 'edit' ? old('hasil_panen') : ($siklus->hasil_panen ?? 0) }}"
+                        value="{{ old('_form') === 'edit' ? old('hasil_panen') : ($detailTerbaru->hasil_panen ?? 0) }}"
                         placeholder="Contoh : 3 kg"
                         class="h-[50px] w-full rounded border border-[#cfcfcf] px-5 text-[16px] text-[#4a4a4a] outline-none placeholder:text-[#8a8a8a] focus:border-[#1fa16f]"
                     >

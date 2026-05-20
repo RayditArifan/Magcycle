@@ -106,7 +106,7 @@
                         </div>
                     </section>
 
-                    <div id="createModal" class="fixed inset-0 z-[9998] hidden items-center justify-center bg-black/10">
+                    <div id="createModal" class="fixed inset-0 z-[9998] hidden items-center justify-center bg-black/45">
                         <div class="relative w-[675px] rounded-md border border-[#252525] bg-white px-32 py-12 shadow-xl">
                             <button type="button" id="closeCreateModal" class="absolute right-5 top-4 text-[#4a4a4a]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">

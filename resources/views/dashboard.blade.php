@@ -5,14 +5,100 @@
 @section('content')
     <section class="px-8 py-5">
         <div class="mb-8">
-            <h2 class="mb-2 text-[18px] font-medium text-[#1d9d73]">
-                Monitoring Siklus Maggot
-            </h2>
+            <div class="overflow-hidden rounded-[16px] border border-[#2db88b] bg-white">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-[#2db88b]">
+                    <h2 class="text-[17px] font-medium text-[#4a4a4a]">
+                        Batch aktif saat ini
+                    </h2>
+                    <a href="{{ route('admin.siklus-maggot.index') }}"
+                       class="inline-flex items-center rounded-[7px] border border-[#555] px-3 py-1 text-[13px] font-medium text-[#4a4a4a] hover:bg-gray-50">
+                        Detail siklus <span class="ml-1">→</span>
+                    </a>
+                </div>
 
-            <div class="rounded-[18px] border border-[#2db88b] bg-[#d9efe7] px-6 py-7">
-                <p class="text-[17px] font-medium text-[#4a4a4a]">
-                    Data monitoring belum tersedia
-                </p>
+                @if(isset($monitoringMaggot) && $monitoringMaggot->count() > 0)
+                    <div>
+                        @foreach($monitoringMaggot as $maggot)
+                            @php
+                                $statusRaw = strtolower($maggot->status_label ?? 'telur');
+                                $hariKe = $maggot->hari_ke ?? 1;
+                                $jumlahMasuk = rtrim(rtrim(number_format((float) $maggot->jumlah_masuk, 2, '.', ''), '0'), '.');
+                                
+                                if ($statusRaw === 'telur') {
+                                    $bgColor = 'bg-[#126b4d]'; 
+                                    $progressLabel = 'Penetasan';
+                                    $statusLabel = 'Telur';
+                                    $totalHari = 4;
+                                    $descSuffix = "500 - 600 Telur BSF menetas dalam 1 hari";
+                                    $percent = min(round(($hariKe / $totalHari) * 100), 100);
+                                } elseif ($statusRaw === 'bayi larva') {
+                                    $bgColor = 'bg-[#cd8c00]'; 
+                                    $progressLabel = 'Pembesaran awal';
+                                    $statusLabel = 'Bayi Larva';
+                                    $totalHari = 21;
+                                    $descSuffix = "Ukuran ±1 mm, warna putih, aktif makan sampah organik";
+                                    $percent = min(round(($hariKe / $totalHari) * 100), 100);
+                                } elseif ($statusRaw === 'larva') {
+                                    $bgColor = 'bg-[#984112]'; 
+                                    $progressLabel = 'Menuju panen';
+                                    $statusLabel = 'Larva';
+                                    $totalHari = 21;
+                                    $descSuffix = "Warna putih kecokelatan, aktif makan, kadar protein >40%";
+                                    $percent = min(round(($hariKe / $totalHari) * 100), 100);
+                                } else { 
+                                    $bgColor = 'bg-[#3b1502]'; 
+                                    $progressLabel = 'Siap panen';
+                                    $statusLabel = 'Panen'; 
+                                    $totalHari = 21;
+                                    $descSuffix = "<span class='text-red-600 font-medium'>Siap dipanen!</span>";
+                                    $percent = 100;
+                                }
+                                
+                                $rowBg = $loop->odd ? 'bg-[#9fd8c8]' : 'bg-white';
+                                $trackBg = $loop->odd ? 'bg-[#ccebe2]' : 'bg-[#e5e7eb]';
+                            @endphp
+                            
+                            <div class="grid grid-cols-1 xl:grid-cols-[120px_1fr_250px] gap-4 items-center px-6 py-4 {{ $rowBg }}">
+                                <div>
+                                    <span class="inline-flex items-center rounded-md px-2.5 py-1 text-[13px] font-medium text-white {{ $bgColor }}">
+                                        <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-white"></span>
+                                        {{ $statusLabel }}
+                                    </span>
+                                </div>
+                                
+                                <div>
+                                    <div class="text-[17px] font-medium text-[#4a4a4a] mb-0.5">
+                                        {{ $maggot->nama_batch }} • Masuk: {{ $jumlahMasuk }} kg
+                                    </div>
+                                    <div class="text-[14px] text-[#4a4a4a]">
+                                        Tanggal Masuk : {{ \Carbon\Carbon::parse($maggot->tanggal_masuk)->translatedFormat('Y-m-d') }} • 
+                                        @if($statusLabel === 'Panen' || $maggot->status_label === 'Selesai')
+                                            Hari ke-{{ $totalHari }} • {!! $descSuffix !!}
+                                        @else
+                                            Hari ke-{{ $hariKe }} dari {{ $totalHari }} • {!! $descSuffix !!}
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between text-[13px] font-medium text-[#4a4a4a] mb-1.5">
+                                        <span>{{ $progressLabel }}</span>
+                                        <span>{{ $percent }}%</span>
+                                    </div>
+                                    <div class="h-[14px] w-full rounded-full {{ $trackBg }} overflow-hidden">
+                                        <div class="h-full rounded-full {{ $bgColor }}" style="width: {{ $percent }}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="px-6 py-7">
+                        <p class="text-[17px] font-medium text-[#4a4a4a]">
+                            Data monitoring belum tersedia
+                        </p>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -80,17 +166,17 @@
                 <div class="overflow-hidden rounded-[16px] border border-[#2db88b] bg-white">
                     @if(isset($jadwalSampah) && $jadwalSampah->count() > 0)
                         <div class="border-b border-[#2db88b]">
-                            <div class="grid grid-cols-[1fr_130px_110px] px-5 py-2 text-[15px] font-medium text-[#4a4a4a]">
+                            <div class="grid grid-cols-[130px_1fr_110px] px-5 py-2 text-[15px] font-medium text-[#4a4a4a]">
                                 <div>Mitra</div>
-                                <div>Tanggal</div>
+                                <div>Alamat</div>
                                 <div>Status</div>
                             </div>
                         </div>
 
                         @foreach($jadwalSampah as $jadwal)
-                            <div class="grid grid-cols-[1fr_130px_110px] items-center px-5 py-3 text-[15px] text-[#4a4a4a] {{ $loop->odd ? 'bg-[#9fd8c8]' : 'bg-white' }}">
-                                <div>{{ $jadwal->username ?? '-' }}</div>
-                                <div>{{ \Carbon\Carbon::parse($jadwal->tanggal_pengambilan)->translatedFormat('d M Y') }}</div>
+                            <div class="grid grid-cols-[130px_1fr_110px] items-center px-5 py-3 text-[15px] text-[#4a4a4a] {{ $loop->odd ? 'bg-[#9fd8c8]' : 'bg-white' }}">
+                                <div class="truncate pr-3">{{ $jadwal->username ?? '-' }}</div>
+                                <div class="pr-3">{{ $jadwal->alamat_pengambilan ?? '-' }}</div>
                                 <div>
                                     @if($jadwal->status_text === 'menunggu konfirmasi')
                                         <span class="inline-flex items-center rounded bg-[#d38b00] px-2 py-0.5 text-[11px] font-medium text-white leading-tight">

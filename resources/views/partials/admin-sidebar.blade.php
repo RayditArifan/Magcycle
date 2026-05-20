@@ -33,16 +33,6 @@
                 </svg>
                 <span>Dashboard</span>
             </a>
-
-            <a href="#"
-               class="flex items-center gap-4 px-10 py-4 text-[17px] font-medium text-white hover:bg-white/10 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 1 1-6 0m6 0H9"/>
-                </svg>
-                <span>Notifikasi</span>
-            </a>
         </div>
 
         <!-- OPERASIONAL -->
