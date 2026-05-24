@@ -12,6 +12,7 @@ use App\Http\Controllers\PengambilanSampahController;
 use App\Http\Controllers\PengambilanSampahMitraController;
 use App\Http\Controllers\PanduanSetorController;
 use App\Http\Controllers\SiklusMaggotController;
+use App\Http\Controllers\LaporanController;
 
 /* Umum */
 Route::redirect('/', '/login');
@@ -83,6 +84,15 @@ Route::get('/admin/siklus-maggot/{siklus}', [SiklusMaggotController::class, 'sho
 Route::put('/admin/siklus-maggot/{siklus}', [SiklusMaggotController::class, 'update'])
     ->whereNumber('siklus')
     ->name('admin.siklus-maggot.update');
+
+Route::get('/admin/laporanku/buat-laporan-sampah', [LaporanController::class, 'buatLaporanSampah'])
+    ->name('admin.laporanku.buat-laporan-sampah');
+Route::post('/admin/laporanku/buat-laporan-sampah', [LaporanController::class, 'storeLaporanSampah'])
+    ->name('admin.laporanku.store-laporan-sampah');
+Route::get('/admin/laporanku/laporan-sampah', [LaporanController::class, 'lihatLaporanSampah'])
+    ->name('admin.laporanku.laporan-sampah');
+Route::get('/admin/laporanku/laporan-produksi', [LaporanController::class, 'lihatLaporanProduksi'])
+    ->name('admin.laporanku.laporan-produksi');
 
 /* API Publik */
 Route::get('/api/kecamatan', function (\Illuminate\Http\Request $request) {
