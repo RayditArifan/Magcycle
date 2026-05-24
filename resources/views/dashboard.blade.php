@@ -23,41 +23,41 @@
                                 $statusRaw = strtolower($maggot->status_label ?? 'telur');
                                 $hariKe = $maggot->hari_ke ?? 1;
                                 $jumlahMasuk = rtrim(rtrim(number_format((float) $maggot->jumlah_masuk, 2, '.', ''), '0'), '.');
-                                
+
                                 if ($statusRaw === 'telur') {
-                                    $bgColor = 'bg-[#126b4d]'; 
+                                    $bgColor = 'bg-[#126b4d]';
                                     $progressLabel = 'Penetasan';
                                     $statusLabel = 'Telur';
                                     $totalHari = 4;
                                     $descSuffix = "500 - 600 Telur BSF menetas dalam 1 hari";
                                     $percent = min(round(($hariKe / $totalHari) * 100), 100);
                                 } elseif ($statusRaw === 'bayi larva') {
-                                    $bgColor = 'bg-[#cd8c00]'; 
+                                    $bgColor = 'bg-[#cd8c00]';
                                     $progressLabel = 'Pembesaran awal';
                                     $statusLabel = 'Bayi Larva';
                                     $totalHari = 21;
                                     $descSuffix = "Ukuran ±1 mm, warna putih, aktif makan sampah organik";
                                     $percent = min(round(($hariKe / $totalHari) * 100), 100);
                                 } elseif ($statusRaw === 'larva') {
-                                    $bgColor = 'bg-[#984112]'; 
+                                    $bgColor = 'bg-[#984112]';
                                     $progressLabel = 'Menuju panen';
                                     $statusLabel = 'Larva';
                                     $totalHari = 21;
                                     $descSuffix = "Warna putih kecokelatan, aktif makan, kadar protein >40%";
                                     $percent = min(round(($hariKe / $totalHari) * 100), 100);
-                                } else { 
-                                    $bgColor = 'bg-[#3b1502]'; 
+                                } else {
+                                    $bgColor = 'bg-[#3b1502]';
                                     $progressLabel = 'Siap panen';
-                                    $statusLabel = 'Panen'; 
+                                    $statusLabel = 'Panen';
                                     $totalHari = 21;
                                     $descSuffix = "<span class='text-red-600 font-medium'>Siap dipanen!</span>";
                                     $percent = 100;
                                 }
-                                
+
                                 $rowBg = $loop->odd ? 'bg-[#9fd8c8]' : 'bg-white';
                                 $trackBg = $loop->odd ? 'bg-[#ccebe2]' : 'bg-[#e5e7eb]';
                             @endphp
-                            
+
                             <div class="grid grid-cols-1 xl:grid-cols-[120px_1fr_250px] gap-4 items-center px-6 py-4 {{ $rowBg }}">
                                 <div>
                                     <span class="inline-flex items-center rounded-md px-2.5 py-1 text-[13px] font-medium text-white {{ $bgColor }}">
@@ -65,13 +65,13 @@
                                         {{ $statusLabel }}
                                     </span>
                                 </div>
-                                
+
                                 <div>
                                     <div class="text-[17px] font-medium text-[#4a4a4a] mb-0.5">
                                         {{ $maggot->nama_batch }} • Masuk: {{ $jumlahMasuk }} kg
                                     </div>
                                     <div class="text-[14px] text-[#4a4a4a]">
-                                        Tanggal Masuk : {{ \Carbon\Carbon::parse($maggot->tanggal_masuk)->translatedFormat('Y-m-d') }} • 
+                                        Tanggal Masuk : {{ \Carbon\Carbon::parse($maggot->tanggal_masuk)->translatedFormat('Y-m-d') }} •
                                         @if($statusLabel === 'Panen' || $maggot->status_label === 'Selesai')
                                             Hari ke-{{ $totalHari }} • {!! $descSuffix !!}
                                         @else
@@ -79,7 +79,7 @@
                                         @endif
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <div class="flex justify-between text-[13px] font-medium text-[#4a4a4a] mb-1.5">
                                         <span>{{ $progressLabel }}</span>
@@ -154,7 +154,7 @@
             <div>
                 <div class="mb-2 flex items-center justify-between">
                     <h2 class="text-[18px] font-medium text-[#1d9d73]">
-                        Jadwal Pengambilan Sampah
+                        Jadwal Pengambilan Sampah hari ini
                     </h2>
                     <a href="{{ route('admin.pengambilan-sampah.index') }}"
                        class="inline-flex items-center rounded-[7px] border border-[#555] px-3 py-1 text-[13px] font-medium text-[#4a4a4a] hover:bg-gray-50">
