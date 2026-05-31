@@ -124,17 +124,38 @@
                 </div>
             @endif
 
-            <a href="#"
-               class="flex items-center gap-4 px-10 py-4 text-[17px] font-medium text-white hover:bg-white/10 transition">
+            @php
+                $magpoinActive = request()->routeIs('admin.magpoin.*');
+            @endphp
+
+            <a href="{{ route('admin.magpoin.nilai-konversi') }}"
+            class="flex items-center gap-4 px-10 py-4 text-[17px] font-medium text-white transition
+            {{ $magpoinActive ? 'bg-[#2fc697]' : 'hover:bg-white/10' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/>
+                        d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/>
                     <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M10 14.25h2.25a1.75 1.75 0 0 0 0-3.5H11.5a1.75 1.75 0 0 1 0-3.5H14m-2-1.25V18"/>
+                        d="M10 14.25h2.25a1.75 1.75 0 0 0 0-3.5H11.5a1.75 1.75 0 0 1 0-3.5H14m-2-1.25V18"/>
                 </svg>
                 <span>MagPoin</span>
             </a>
+
+            @if($magpoinActive)
+                <div class="bg-[#1fa16f]">
+                    <a href="{{ route('admin.magpoin.nilai-konversi') }}"
+                    class="block pr-6 py-3 text-[16px] font-semibold leading-tight text-white transition
+                    {{ request()->routeIs('admin.magpoin.nilai-konversi') ? 'bg-[#2fc697] border-l-4 border-[#087a5b] pl-[86px]' : 'pl-[90px] hover:bg-white/10' }}">
+                        Nilai Konversi Poin
+                    </a>
+
+                    <a href="{{ route('admin.magpoin.transaksi-poin') }}"
+                    class="block pr-6 py-3 text-[16px] font-semibold leading-tight text-white transition
+                    {{ request()->routeIs('admin.magpoin.transaksi-poin') || request()->routeIs('admin.magpoin.riwayat-transaksi') ? 'bg-[#2fc697] border-l-4 border-[#087a5b] pl-[86px]' : 'pl-[90px] hover:bg-white/10' }}">
+                        Transaksi Poin Mitra
+                    </a>
+                </div>
+            @endif
         </div>
     </nav>
 </aside>

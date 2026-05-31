@@ -13,6 +13,9 @@ use App\Http\Controllers\PengambilanSampahMitraController;
 use App\Http\Controllers\PanduanSetorController;
 use App\Http\Controllers\SiklusMaggotController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\MagPoinAdminController;
+use App\Http\Controllers\MagPoinMitraController;
+use App\Http\Controllers\NotifikasiController;
 
 /* Umum */
 Route::redirect('/', '/login');
@@ -34,18 +37,21 @@ Route::post('/mitra/reset-password/{token}', [MitraPasswordResetController::clas
     ->name('mitra.password.update');
 
 /* Admin */
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('/admin/profile', [ProfileController::class, 'adminIndex'])->name('admin.profile');
-Route::get('/admin/profile/edit', [ProfileController::class, 'adminEdit'])->name('admin.profile.edit');
-Route::post('/admin/profile/edit', [ProfileController::class, 'adminUpdate'])->name('admin.profile.update');
-Route::post('/admin/profile/update', [ProfileController::class, 'adminUpdate'])->name('admin.profile.update');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
+Route::get('/admin/profile', [ProfileController::class, 'adminIndex'])
+    ->name('admin.profile');
+Route::get('/admin/profile/edit', [ProfileController::class, 'adminEdit'])
+    ->name('admin.profile.edit');
+Route::post('/admin/profile/edit', [ProfileController::class, 'adminUpdate'])
+    ->name('admin.profile.update');
+Route::post('/admin/profile/update', [ProfileController::class, 'adminUpdate'])
+    ->name('admin.profile.update');
 
 Route::get('/admin/profil-mitra', [ProfileController::class, 'adminMitraIndex'])
     ->name('admin.mitra.profiles');
-
 Route::get('/admin/profil-mitra/{id_mitra}', [ProfileController::class, 'adminMitraShow'])
     ->name('admin.mitra.profiles.show');
-
 Route::post('/admin/profil-mitra/{id_mitra}', [ProfileController::class, 'adminMitraUpdateStatus'])
     ->name('admin.mitra.profiles.update');
 
@@ -94,6 +100,22 @@ Route::get('/admin/laporanku/laporan-sampah', [LaporanController::class, 'lihatL
 Route::get('/admin/laporanku/laporan-produksi', [LaporanController::class, 'lihatLaporanProduksi'])
     ->name('admin.laporanku.laporan-produksi');
 
+Route::get('/admin/magpoin/nilai-konversi', [MagPoinAdminController::class, 'nilaiKonversi'])
+    ->name('admin.magpoin.nilai-konversi');
+Route::post('/admin/magpoin/nilai-konversi', [MagPoinAdminController::class, 'storeNilaiKonversi'])
+    ->name('admin.magpoin.nilai-konversi.store');
+Route::put('/admin/magpoin/nilai-konversi/{id}', [MagPoinAdminController::class, 'updateNilaiKonversi'])
+    ->name('admin.magpoin.nilai-konversi.update');
+
+Route::get('/admin/magpoin/transaksi-poin', [MagPoinAdminController::class, 'transaksiPoin'])
+    ->name('admin.magpoin.transaksi-poin');
+Route::put('/admin/magpoin/transaksi-poin/{id}/setuju', [MagPoinAdminController::class, 'setujuiTransaksi'])
+    ->name('admin.magpoin.transaksi-poin.setuju');
+Route::put('/admin/magpoin/transaksi-poin/{id}/tolak', [MagPoinAdminController::class, 'tolakTransaksi'])
+    ->name('admin.magpoin.transaksi-poin.tolak');
+Route::get('/admin/magpoin/riwayat-transaksi', [MagPoinAdminController::class, 'riwayatTransaksi'])
+    ->name('admin.magpoin.riwayat-transaksi');
+
 /* API Publik */
 Route::get('/api/kecamatan', function (\Illuminate\Http\Request $request) {
     $kecamatan = \Illuminate\Support\Facades\DB::table('kecamatan')
@@ -120,3 +142,13 @@ Route::get('/mitra/pengambilan-sampah/{jadwal}', [PengambilanSampahMitraControll
     ->name('mitra.pengambilan-sampah.show');
 Route::patch('/mitra/pengambilan-sampah/{jadwal}/batal', [PengambilanSampahMitraController::class, 'batal'])
     ->name('mitra.pengambilan-sampah.batal');
+
+Route::get('/mitra/magpoin', [MagPoinMitraController::class, 'index'])
+    ->name('mitra.magpoin.index');
+Route::post('/mitra/magpoin/tukar-poin', [MagPoinMitraController::class, 'storeTukarPoin'])
+    ->name('mitra.magpoin.tukar-poin.store');
+
+/* Notifikasi */
+Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
+Route::post('/notifikasi/{id}/read', [NotifikasiController::class, 'read'])->name('notifikasi.read');
+Route::post('/notifikasi/read-all', [NotifikasiController::class, 'readAll'])->name('notifikasi.readAll');

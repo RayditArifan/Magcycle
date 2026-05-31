@@ -52,16 +52,32 @@ class LaporanController extends Controller
 
     private function hitungPoin($beratValid)
     {
-        $konversi = DB::table('konversi_poin')
-            ->where('berat_sampah', '<=', $beratValid)
+        $konversiList = DB::table('konversi_poin')
+            ->where('berat_sampah', '>', 0)
+            ->where('konversi_poin', '>', 0)
             ->orderByDesc('berat_sampah')
-            ->first();
+            ->get();
 
-        if (!$konversi) {
+        if ($konversiList->isEmpty()) {
             return 0;
         }
 
-        return (int) floor($beratValid / $konversi->berat_sampah) * (int) $konversi->konversi_poin;
+        $sisaBerat = (float) $beratValid;
+        $totalPoin = 0;
+
+        foreach ($konversiList as $konversi) {
+            $beratKonversi = (float) $konversi->berat_sampah;
+            $poinKonversi = (int) $konversi->konversi_poin;
+
+            if ($sisaBerat >= $beratKonversi) {
+                $jumlahPaket = floor($sisaBerat / $beratKonversi);
+
+                $totalPoin += $jumlahPaket * $poinKonversi;
+                $sisaBerat -= $jumlahPaket * $beratKonversi;
+            }
+        }
+
+        return (int) $totalPoin;
     }
 
     public function buatLaporanSampah()

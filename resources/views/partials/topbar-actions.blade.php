@@ -1,17 +1,5 @@
 <div class="flex items-center gap-5 relative" id="topbarActionsWrapper">
-    <button type="button" class="relative text-[#4a4a4a]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 1 1-6 0m6 0H9"/>
-        </svg>
-
-        @if(($notificationCount ?? 0) > 0)
-            <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
-                {{ $notificationCount }}
-            </span>
-        @endif
-    </button>
+    @include('components.notifikasi-dropdown')
 
     <div class="relative">
         <button
