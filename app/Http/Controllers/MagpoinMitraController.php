@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Notifikasi;
 
 class MagPoinMitraController extends Controller
 {
@@ -88,7 +89,7 @@ class MagPoinMitraController extends Controller
         if ($validator->fails()) {
             return back()
                 ->withInput()
-                ->with('error', 'Data tidak valid. Silahkan isi kembali');
+                ->with('error_popup', 'Data tidak valid. Silahkan isi kembali');
         }
 
         $poinTukar = (int) $request->poin_tukar;
@@ -96,7 +97,7 @@ class MagPoinMitraController extends Controller
         if ($poinTukar > (int) $mitra->saldo_poin) {
             return back()
                 ->withInput()
-                ->with('error', 'Saldo poin tidak mencukupi.');
+                ->with('error_popup', 'Saldo poin tidak mencukupi.');
         }
 
         $statusMenunggu = $this->getStatusPenukaranId('menunggu konfirmasi');
@@ -126,6 +127,40 @@ class MagPoinMitraController extends Controller
                 'updated_at' => now(),
             ]);
         });
+
+        // Kirim notifikasi ke admin yang berada di kota/kabupaten yang sama
+        $kecamatan = null;
+        if (!empty($mitra->id_kecamatan)) {
+            $kecamatan = DB::table('kecamatan')
+                ->where('id_kecamatan', $mitra->id_kecamatan)
+                ->first();
+        }
+
+        $admins = collect();
+        if ($kecamatan) {
+            $admins = DB::table('data_admin as a')
+                ->join('kecamatan as kc', 'a.id_kecamatan', '=', 'kc.id_kecamatan')
+                ->where('kc.id_kota', $kecamatan->id_kota)
+                ->whereNotNull('a.id_kecamatan')
+                ->select('a.id')
+                ->get();
+        }
+
+        // Fallback: jika tidak ada admin di kota tersebut, kirim ke semua admin
+        if ($admins->isEmpty()) {
+            $admins = DB::table('data_admin')->select('id')->get();
+        }
+
+        foreach ($admins as $admin) {
+            Notifikasi::buat(
+                recipientId:   $admin->id,
+                recipientRole: 'admin',
+                judul:         'Permintaan Penukaran Poin',
+                pesan:         "{$mitra->username} mengajukan penukaran poin sebesar " . number_format($poinTukar, 0, ',', '.') . " poin.",
+                kategori:      'Transaksi',
+                url:           route('admin.magpoin.transaksi-poin'),
+            );
+        }
 
         return redirect()
             ->route('mitra.magpoin.index')

@@ -123,7 +123,7 @@ class LaporanController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->withInput()->with('error', 'Data tidak valid. Silahkan isi kembali');
+            return back()->withInput()->with('error_popup', 'Data tidak valid. Silahkan isi kembali');
         }
 
         $pengambilanId = (int) $request->pengambilan_sampah_id;
@@ -141,11 +141,11 @@ class LaporanController extends Controller
             ->first();
 
         if (!$jadwal) {
-            return back()->with('error', 'Data tidak valid. Silahkan isi kembali');
+            return back()->withInput()->with('error_popup', 'Data tidak valid. Silahkan isi kembali');
         }
 
         if ($beratValid > (float) $jadwal->berat_sampah) {
-            return back()->with('error', 'Data tidak valid. Silahkan isi kembali');
+            return back()->withInput()->with('error_popup', 'Data tidak valid. Silahkan isi kembali');
         }
 
         $sudahAda = DB::table('laporan_sampah')
@@ -153,7 +153,7 @@ class LaporanController extends Controller
             ->exists();
 
         if ($sudahAda) {
-            return back()->with('error', 'Laporan sampah untuk jadwal ini sudah dibuat.');
+            return back()->withInput()->with('error_popup', 'Laporan sampah untuk jadwal ini sudah dibuat.');
         }
 
         DB::transaction(function () use ($jadwal, $admin, $beratValid) {
@@ -178,7 +178,7 @@ class LaporanController extends Controller
 
         return redirect()
             ->route('admin.laporanku.laporan-sampah')
-            ->with('success', 'Laporan sampah berhasil disimpan.');
+            ->with('success_popup', 'Laporan sampah berhasil disimpan.');
     }
 
     public function lihatLaporanSampah(Request $request)
@@ -221,7 +221,7 @@ class LaporanController extends Controller
         return view('admin.laporanku.laporan-sampah', compact('laporanSampah', 'admin'));
     }
 
-    public function lihatLaporanProduksi()
+    public function lihatLaporanProduksi(Request $request)
     {
         if ($redirect = $this->guardAdmin()) {
             return $redirect;
@@ -236,7 +236,7 @@ class LaporanController extends Controller
             )
             ->groupBy('siklus_maggot_id');
 
-        $laporanProduksi = DB::table('siklus_maggot as sm')
+        $query = DB::table('siklus_maggot as sm')
             ->joinSub($latestDetail, 'ld', function ($join) {
                 $join->on('sm.id', '=', 'ld.siklus_maggot_id');
             })
@@ -247,10 +247,28 @@ class LaporanController extends Controller
             ->join('data_admin as da', 'sm.admin_id', '=', 'da.id')
             ->join('kecamatan as k', 'da.id_kecamatan', '=', 'k.id_kecamatan')
             ->where('k.id_kota', $admin->id_kota)
-            ->where(function ($query) {
-                $query->where('d.hasil_panen', '>', 0)
+            ->where(function ($q) {
+                $q->where('d.hasil_panen', '>', 0)
                     ->orWhere('d.jumlah_kasgot', '>', 0);
-            })
+            });
+
+        // Filter rentang tanggal berdasarkan bulan dan tahun
+        $dari = $request->input('dari'); // format: mm/yyyy
+        $sampai = $request->input('sampai'); // format: mm/yyyy
+
+        if ($dari && preg_match('/^(\d{2})\/(\d{4})$/', $dari, $m)) {
+            $query->whereRaw('(YEAR(d.tanggal_monitoring) > ? OR (YEAR(d.tanggal_monitoring) = ? AND MONTH(d.tanggal_monitoring) >= ?))', [
+                $m[2], $m[2], (int) $m[1]
+            ]);
+        }
+
+        if ($sampai && preg_match('/^(\d{2})\/(\d{4})$/', $sampai, $m)) {
+            $query->whereRaw('(YEAR(d.tanggal_monitoring) < ? OR (YEAR(d.tanggal_monitoring) = ? AND MONTH(d.tanggal_monitoring) <= ?))', [
+                $m[2], $m[2], (int) $m[1]
+            ]);
+        }
+
+        $laporanProduksi = $query
             ->select(
                 DB::raw('MONTH(d.tanggal_monitoring) as bulan'),
                 DB::raw('YEAR(d.tanggal_monitoring) as tahun'),
@@ -263,8 +281,9 @@ class LaporanController extends Controller
             )
             ->orderByDesc(DB::raw('YEAR(d.tanggal_monitoring)'))
             ->orderByDesc(DB::raw('MONTH(d.tanggal_monitoring)'))
-            ->paginate(8);
+            ->paginate(8)
+            ->withQueryString();
 
-        return view('admin.laporanku.laporan-produksi', compact('laporanProduksi', 'admin'));
+        return view('admin.laporanku.laporan-produksi', compact('laporanProduksi', 'admin', 'dari', 'sampai'));
     }
 }

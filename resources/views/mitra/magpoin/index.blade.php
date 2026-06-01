@@ -148,7 +148,7 @@
 </div>
 
 {{-- Modal Tukar Poin --}}
-<div id="tukarModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/20 px-4">
+<div id="tukarModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/45 px-4">
     <div class="relative w-full max-w-[720px] rounded-lg border-2 border-[#333] bg-white px-12 md:px-32 py-16 shadow-xl">
         <button
             type="button"
@@ -173,10 +173,9 @@
                 Jumlah Poin Ditukar
             </label>
             <input
-                type="number"
+                type="text"
                 name="poin_tukar"
                 id="poinTukarInput"
-                min="1"
                 placeholder="Contoh : 50000"
                 value="{{ old('poin_tukar') }}"
                 class="mb-5 w-full rounded border border-gray-300 px-5 py-3 text-lg text-gray-600 outline-none focus:border-[#1fa16f]"
@@ -236,7 +235,7 @@
 </div>
 
 {{-- Modal Konfirmasi --}}
-<div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/10 px-4">
+<div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 px-4">
     <div class="w-full max-w-[440px] bg-white px-10 py-8 text-center shadow-xl">
         <h3 class="mb-8 text-[26px] font-bold leading-tight text-gray-500">
             Apakah anda yakin ingin<br>
@@ -265,7 +264,7 @@
 
 {{-- Popup Sukses --}}
 @if(session('success'))
-    <div id="flashPopup" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/10 px-4">
+    <div id="flashPopup" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/45 px-4">
         <div class="w-full max-w-[440px] bg-white px-8 py-8 text-center shadow-xl">
             <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#1da078] text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-11 w-11" fill="none"
@@ -283,7 +282,7 @@
 
 {{-- Popup Error --}}
 @if(session('error'))
-    <div id="flashPopup" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/10 px-4">
+    <div id="flashPopup" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/45 px-4">
         <div class="w-full max-w-[440px] bg-white px-8 py-8 text-center shadow-xl">
             <div class="mx-auto mb-5 text-red-600">
                 <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16" fill="none"
@@ -299,6 +298,8 @@
         </div>
     </div>
 @endif
+
+@include('partials.error-popup')
 
 <script>
     const tukarModal = document.getElementById('tukarModal');
@@ -318,6 +319,9 @@
 
     function formatRupiah(value) {
         const number = parseInt(value || 0);
+        if (isNaN(number)) {
+            return 'Rp 0';
+        }
         return 'Rp ' + number.toLocaleString('id-ID');
     }
 
@@ -386,7 +390,7 @@
         }, 1800);
     }
 
-    @if(session('error'))
+    @if(session('error') || session('error_popup'))
         showTukarModal();
     @endif
 </script>

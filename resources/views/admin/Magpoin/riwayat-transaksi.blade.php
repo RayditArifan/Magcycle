@@ -32,10 +32,17 @@
 
 <div class="px-8 md:px-10 py-20">
     <div class="w-full rounded-2xl border border-[#159b78] overflow-hidden bg-white">
-        <div class="border-b border-[#159b78] px-8 py-5">
+        <div class="flex items-center justify-between border-b border-[#159b78] px-8 py-5">
             <h2 class="text-[22px] font-semibold text-[#4a4a4a]">
                 Riwayat Transaksi Poin Mitra
             </h2>
+
+            <a
+                href="{{ route('admin.magpoin.transaksi-poin') }}"
+                class="rounded-xl border border-[#333] px-8 py-3 text-[17px] font-semibold text-[#4a4a4a] hover:bg-[#e9fff7] transition inline-block"
+            >
+                Kembali
+            </a>
         </div>
 
         <div class="overflow-x-auto">

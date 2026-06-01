@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Stok - MagCycle</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/notifikasi.css') }}">
 </head>
 <body class="bg-[#f6f6f6] text-[#4a4a4a]">
     <div class="flex min-h-screen">
@@ -449,5 +450,6 @@
             showPopup('successEditPopup');
         @endif
     </script>
+    <script src="{{ asset('js/notifikasi.js') }}"></script>
 </body>
 </html>

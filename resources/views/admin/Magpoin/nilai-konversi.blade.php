@@ -99,9 +99,7 @@
                 Nilai Berat Sampah (kg)
             </label>
             <input
-                type="number"
-                step="0.01"
-                min="0.01"
+                type="text"
                 name="berat_sampah"
                 id="beratInput"
                 placeholder="Contoh : 1 kg"
@@ -113,8 +111,7 @@
                 Jumlah Poin
             </label>
             <input
-                type="number"
-                min="1"
+                type="text"
                 name="konversi_poin"
                 id="poinInput"
                 placeholder="Contoh : 10"
@@ -322,5 +319,28 @@
             flashPopup.classList.add('hidden');
         }, 1800);
     }
+
+    @if(old('berat_sampah') !== null || old('konversi_poin') !== null)
+        @if(session('edit_id'))
+            formMode = 'edit';
+            editConfirmed = false;
+            modalTitle.textContent = 'Ubah Nilai Konversi';
+            modalDescription.textContent = 'Isi form berikut untuk mengubah nilai konversi';
+            conversionForm.action = "{{ route('admin.magpoin.nilai-konversi.update', ['id' => ':id']) }}".replace(':id', @json(session('edit_id')));
+            methodInput.disabled = false;
+            methodInput.value = 'PUT';
+        @else
+            formMode = 'create';
+            editConfirmed = false;
+            modalTitle.textContent = 'Tambah Nilai Konversi';
+            modalDescription.textContent = 'Isi form berikut untuk menambah nilai konversi baru';
+            conversionForm.action = "{{ route('admin.magpoin.nilai-konversi.store') }}";
+            methodInput.disabled = true;
+            methodInput.value = '';
+        @endif
+        beratInput.value = @json(old('berat_sampah'));
+        poinInput.value = @json(old('konversi_poin'));
+        showConversionModal();
+    @endif
 </script>
 @endsection

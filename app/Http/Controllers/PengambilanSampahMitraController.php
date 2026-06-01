@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Notifikasi;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -73,6 +74,40 @@ class PengambilanSampahMitraController extends Controller
             'created_at'          => now(),
             'updated_at'          => now(),
         ]);
+
+        // Kirim notifikasi ke admin yang berada di kota/kabupaten yang sama
+        $usernameMitra = $request->session()->get('username', 'Mitra');
+
+        // Ambil id_kota dari kecamatan yang dipilih mitra
+        $kecamatan = DB::table('kecamatan')
+            ->where('id_kecamatan', $validated['id_kecamatan'])
+            ->first();
+
+        if ($kecamatan) {
+            // Ambil semua admin yang kecamatannya berada di kota/kabupaten yang sama
+            $admins = DB::table('data_admin as a')
+                ->join('kecamatan as kc', 'a.id_kecamatan', '=', 'kc.id_kecamatan')
+                ->where('kc.id_kota', $kecamatan->id_kota)
+                ->whereNotNull('a.id_kecamatan')
+                ->select('a.id')
+                ->get();
+
+            // Fallback: jika tidak ada admin di kota tersebut, kirim ke semua admin
+            if ($admins->isEmpty()) {
+                $admins = DB::table('data_admin')->select('id')->get();
+            }
+
+            foreach ($admins as $admin) {
+                Notifikasi::buat(
+                    recipientId:   $admin->id,
+                    recipientRole: 'admin',
+                    judul:         'Pengajuan Jadwal Baru',
+                    pesan:         "{$usernameMitra} mengajukan jadwal pengambilan sampah pada {$validated['tanggal_pengambilan']}.",
+                    kategori:      'Pengambilan Sampah',
+                    url:           route('admin.pengambilan-sampah.index'),
+                );
+            }
+        }
 
         return redirect()
             ->route('mitra.pengambilan-sampah.index')

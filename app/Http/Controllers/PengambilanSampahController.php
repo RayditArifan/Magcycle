@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notifikasi;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -38,13 +39,17 @@ class PengambilanSampahController extends Controller
     {
         $action = $request->input('action');
 
-        $dataJadwal = DB::table('jadwal_pengambilan_sampah')
-            ->join('status_pengambilan_sampah', 'jadwal_pengambilan_sampah.status_pengambilan_id', '=', 'status_pengambilan_sampah.id')
+        $dataJadwal = DB::table('jadwal_pengambilan_sampah as jp')
+            ->join('status_pengambilan_sampah', 'jp.status_pengambilan_id', '=', 'status_pengambilan_sampah.id')
+            ->join('data_mitra', 'jp.id_mitra', '=', 'data_mitra.id_mitra')
             ->select(
-                'jadwal_pengambilan_sampah.id',
+                'jp.id',
+                'jp.id_mitra',
+                'jp.tanggal_pengambilan',
+                'data_mitra.username as username_mitra',
                 DB::raw('LOWER(status_pengambilan_sampah.status_pengambilan) as status_text')
             )
-            ->where('jadwal_pengambilan_sampah.id', $jadwal)
+            ->where('jp.id', $jadwal)
             ->first();
 
         if (!$dataJadwal) {
@@ -63,6 +68,15 @@ class PengambilanSampahController extends Controller
                     'updated_at' => now(),
                 ]);
 
+            Notifikasi::buat(
+                recipientId:   $dataJadwal->id_mitra,
+                recipientRole: 'mitra',
+                judul:         'Jadwal Pengambilan Disetujui',
+                pesan:         "Jadwal pengambilan sampah kamu pada {$dataJadwal->tanggal_pengambilan} telah disetujui.",
+                kategori:      'Pengambilan Sampah',
+                url:           route('mitra.pengambilan-sampah.index'),
+            );
+
             return redirect()
                 ->route('admin.pengambilan-sampah.index')
                 ->with('success_popup', 'Pengambilan jadwal sampah disetujui');
@@ -80,6 +94,15 @@ class PengambilanSampahController extends Controller
                     'updated_at' => now(),
                 ]);
 
+            Notifikasi::buat(
+                recipientId:   $dataJadwal->id_mitra,
+                recipientRole: 'mitra',
+                judul:         'Jadwal Pengambilan Ditolak',
+                pesan:         "Jadwal pengambilan sampah kamu pada {$dataJadwal->tanggal_pengambilan} ditolak.",
+                kategori:      'Pengambilan Sampah',
+                url:           route('mitra.pengambilan-sampah.riwayat'),
+            );
+
             return redirect()
                 ->route('admin.pengambilan-sampah.index')
                 ->with('success_popup', 'Pengambilan jadwal sampah ditolak');
@@ -96,6 +119,15 @@ class PengambilanSampahController extends Controller
                     'status_pengambilan_id' => $this->statusId('selesai'),
                     'updated_at' => now(),
                 ]);
+
+            Notifikasi::buat(
+                recipientId:   $dataJadwal->id_mitra,
+                recipientRole: 'mitra',
+                judul:         'Jadwal Pengambilan Selesai',
+                pesan:         "Jadwal pengambilan sampah kamu pada {$dataJadwal->tanggal_pengambilan} telah selesai diproses.",
+                kategori:      'Pengambilan Sampah',
+                url:           route('mitra.pengambilan-sampah.riwayat'),
+            );
 
             return redirect()
                 ->route('admin.pengambilan-sampah.index')

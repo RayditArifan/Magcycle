@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Notifikasi;
 
 class MagPoinAdminController extends Controller
 {
@@ -75,7 +76,7 @@ class MagPoinAdminController extends Controller
         if ($validator->fails()) {
             return back()
                 ->withInput()
-                ->with('error', 'Data tidak valid. Silahkan isi kembali');
+                ->with('error_popup', 'Data tidak valid. Silahkan isi kembali');
         }
 
         $beratSampah = (float) $request->berat_sampah;
@@ -87,7 +88,7 @@ class MagPoinAdminController extends Controller
         if ($sudahAda) {
             return back()
                 ->withInput()
-                ->with('error', 'Data tidak valid. Silahkan isi kembali');
+                ->with('error_popup', 'Data tidak valid. Silahkan isi kembali');
         }
 
         DB::table('konversi_poin')->insert([
@@ -113,7 +114,7 @@ class MagPoinAdminController extends Controller
             ->first();
 
         if (!$dataLama) {
-            return back()->with('error', 'Data tidak valid. Silahkan isi kembali');
+            return back()->with('error_popup', 'Data tidak valid. Silahkan isi kembali');
         }
 
         $validator = Validator::make($request->all(), [
@@ -124,7 +125,8 @@ class MagPoinAdminController extends Controller
         if ($validator->fails()) {
             return back()
                 ->withInput()
-                ->with('error', 'Data tidak valid. Silahkan isi kembali');
+                ->with('edit_id', $id)
+                ->with('error_popup', 'Data tidak valid. Silahkan isi kembali');
         }
 
         $beratSampah = (float) $request->berat_sampah;
@@ -137,7 +139,8 @@ class MagPoinAdminController extends Controller
         if ($duplikat) {
             return back()
                 ->withInput()
-                ->with('error', 'Data tidak valid. Silahkan isi kembali');
+                ->with('edit_id', $id)
+                ->with('error_popup', 'Data tidak valid. Silahkan isi kembali');
         }
 
         DB::table('konversi_poin')
@@ -194,6 +197,15 @@ class MagPoinAdminController extends Controller
                 'updated_at' => now(),
             ]);
 
+        Notifikasi::buat(
+            recipientId:   $transaksi->id_mitra,
+            recipientRole: 'mitra',
+            judul:         'Penukaran Poin Disetujui',
+            pesan:         "Pengajuan penukaran poin sebesar " . number_format($transaksi->poin_tukar, 0, ',', '.') . " poin telah disetujui.",
+            kategori:      'Transaksi',
+            url:           route('mitra.magpoin.index'),
+        );
+
         return redirect()
             ->route('admin.magpoin.transaksi-poin')
             ->with('success', 'Penukaran Poin Berhasil Dikonfirmasi');
@@ -229,6 +241,15 @@ class MagPoinAdminController extends Controller
                 ->where('id_mitra', $transaksi->id_mitra)
                 ->increment('saldo_poin', $transaksi->poin_tukar);
         });
+
+        Notifikasi::buat(
+            recipientId:   $transaksi->id_mitra,
+            recipientRole: 'mitra',
+            judul:         'Penukaran Poin Ditolak',
+            pesan:         "Pengajuan penukaran poin sebesar " . number_format($transaksi->poin_tukar, 0, ',', '.') . " poin ditolak.",
+            kategori:      'Transaksi',
+            url:           route('mitra.magpoin.index'),
+        );
 
         return redirect()
             ->route('admin.magpoin.transaksi-poin')

@@ -4,17 +4,6 @@
 
 @section('content')
 <div class="px-8 md:px-10 py-12 overflow-x-hidden">
-    @if(session('error'))
-        <div class="mb-5 rounded-lg border border-red-300 bg-red-50 px-5 py-3 text-center text-red-700 font-semibold">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    @if(session('success'))
-        <div class="mb-5 rounded-lg border border-emerald-300 bg-emerald-50 px-5 py-3 text-center text-emerald-700 font-semibold">
-            {{ session('success') }}
-        </div>
-    @endif
 
     <div class="w-full rounded-2xl border border-[#159b78] overflow-hidden bg-white">
         <table class="w-full table-fixed text-[17px] text-[#3f3f3f]">
@@ -113,8 +102,8 @@
                    class="mb-4 w-full rounded border border-gray-300 px-4 py-3 text-lg text-gray-600">
 
             <label class="block text-lg font-medium text-gray-500">Berat Valid (kg)*</label>
-            <input name="berat_valid" type="number" step="0.01" min="0.01" required
-                   placeholder="Contoh : 3 kg"
+            <input name="berat_valid" type="text" required
+                   placeholder="Contoh : 3"
                    class="w-full rounded border border-gray-300 px-4 py-3 text-lg text-gray-600">
 
             <div class="mt-9 text-center">
@@ -155,4 +144,36 @@
         }
     });
 </script>
+
+@if(old('pengambilan_sampah_id'))
+    @php
+        $oldJadwal = $dataPengambilan->firstWhere('id', old('pengambilan_sampah_id'));
+    @endphp
+    @if($oldJadwal)
+        @php
+            $oldId = $oldJadwal->id;
+            $oldUsername = $oldJadwal->username;
+            $oldTanggal = \Carbon\Carbon::parse($oldJadwal->tanggal_pengambilan)->format('d/m/Y');
+            $oldBerat = rtrim(rtrim(number_format($oldJadwal->berat_sampah, 2, '.', ''), '0'), '.') . ' kg';
+            $oldBeratValid = old('berat_valid');
+        @endphp
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('pengambilanId').value = @json($oldId);
+                document.getElementById('username').value = @json($oldUsername);
+                document.getElementById('tanggal').value = @json($oldTanggal);
+                document.getElementById('beratPengajuan').value = @json($oldBerat);
+                
+                const beratValidInput = document.querySelector('input[name="berat_valid"]');
+                if (beratValidInput) {
+                    beratValidInput.value = @json($oldBeratValid);
+                }
+
+                const modalBg = document.getElementById('modalBg');
+                modalBg.classList.remove('hidden');
+                modalBg.classList.add('flex');
+            });
+        </script>
+    @endif
+@endif
 @endsection
