@@ -14,14 +14,12 @@
             ->where('recipient_role', $notifRole)
             ->where('is_read', false)
             ->latest()
-            ->limit(5)
             ->get();
 
         $notifSudahDibaca = Notifikasi::where('recipient_id', $notifUserId)
             ->where('recipient_role', $notifRole)
             ->where('is_read', true)
             ->latest()
-            ->limit(5)
             ->get();
 
         $jumlahBelumDibaca = $notifBelumDibaca->count();
@@ -47,42 +45,46 @@
 
         <div class="notif-section-title">Belum Dibaca</div>
 
-        @forelse ($notifBelumDibaca as $notif)
-            <div class="notif-item unread" data-id="{{ $notif->id }}" data-url="{{ $notif->url }}">
-                @if ($notifRole === 'admin')
-                    <div class="notif-avatar"></div>
-                @endif
+        <div class="notif-scroll-area">
+            @forelse ($notifBelumDibaca as $notif)
+                <div class="notif-item unread" data-id="{{ $notif->id }}" data-url="{{ $notif->url }}">
+                    @if ($notifRole === 'admin')
+                        <div class="notif-avatar"></div>
+                    @endif
 
-                <div class="notif-content">
-                    <div class="notif-item-title">{{ $notif->judul }}</div>
-                    <div class="notif-message">{{ $notif->pesan }}</div>
-                    <div class="notif-meta">
-                        {{ $notif->created_at->diffForHumans() }} · {{ $notif->kategori }}
+                    <div class="notif-content">
+                        <div class="notif-item-title">{{ $notif->judul }}</div>
+                        <div class="notif-message">{{ $notif->pesan }}</div>
+                        <div class="notif-meta">
+                            {{ $notif->created_at->diffForHumans() }} · {{ $notif->kategori }}
+                        </div>
                     </div>
                 </div>
-            </div>
-        @empty
-            <div class="notif-empty">Tidak ada notifikasi baru</div>
-        @endforelse
+            @empty
+                <div class="notif-empty">Tidak ada notifikasi baru</div>
+            @endforelse
+        </div>
 
         <div class="notif-section-title read-title">Sudah Dibaca</div>
 
-        @forelse ($notifSudahDibaca as $notif)
-            <div class="notif-item read" data-id="{{ $notif->id }}" data-url="{{ $notif->url }}">
-                @if ($notifRole === 'admin')
-                    <div class="notif-avatar"></div>
-                @endif
+        <div class="notif-scroll-area">
+            @forelse ($notifSudahDibaca as $notif)
+                <div class="notif-item read" data-id="{{ $notif->id }}" data-url="{{ $notif->url }}">
+                    @if ($notifRole === 'admin')
+                        <div class="notif-avatar"></div>
+                    @endif
 
-                <div class="notif-content">
-                    <div class="notif-item-title">{{ $notif->judul }}</div>
-                    <div class="notif-message">{{ $notif->pesan }}</div>
-                    <div class="notif-meta">
-                        {{ $notif->created_at->diffForHumans() }} · {{ $notif->kategori }}
+                    <div class="notif-content">
+                        <div class="notif-item-title">{{ $notif->judul }}</div>
+                        <div class="notif-message">{{ $notif->pesan }}</div>
+                        <div class="notif-meta">
+                            {{ $notif->created_at->diffForHumans() }} · {{ $notif->kategori }}
+                        </div>
                     </div>
                 </div>
-            </div>
-        @empty
-            <div class="notif-empty">Belum ada notifikasi yang dibaca</div>
-        @endforelse
+            @empty
+                <div class="notif-empty">Belum ada notifikasi yang dibaca</div>
+            @endforelse
+        </div>
     </div>
 </div>

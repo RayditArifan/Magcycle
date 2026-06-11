@@ -150,6 +150,29 @@
     margin-top: 2px;
 }
 
+.notif-scroll-area {
+    max-height: 225px; /* ~3 item × 75px per item */
+    overflow-y: auto;
+}
+
+.notif-scroll-area::-webkit-scrollbar {
+    width: 5px;
+}
+
+.notif-scroll-area::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.notif-scroll-area::-webkit-scrollbar-thumb {
+    background: #b0cfc8;
+    border-radius: 4px;
+}
+
+.notif-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: #7fb5a8;
+}
+
 .notif-empty {
     padding: 14px 12px;
     color: #777;

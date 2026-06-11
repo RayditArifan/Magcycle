@@ -287,15 +287,23 @@ class ProfileController extends Controller
 
     /* Admin Kelola Profile Mitra*/
 
-    public function adminMitraIndex()
+    public function adminMitraIndex(Request $request)
     {
         if (!session()->has('user_id') || session('role') !== 'admin') {
             return redirect()->route('login')
                 ->with('login_error', 'Silakan login sebagai admin terlebih dahulu.');
         }
 
+        // Ambil id_kota admin yang sedang login
+        $admin = DB::table('data_admin as da')
+            ->join('kecamatan as kc', 'da.id_kecamatan', '=', 'kc.id_kecamatan')
+            ->select('kc.id_kota')
+            ->where('da.id', session('user_id'))
+            ->first();
+
         $mitras = DB::table('data_mitra')
             ->join('status_akun', 'data_mitra.id_status', '=', 'status_akun.id_status')
+            ->join('kecamatan as kc', 'data_mitra.id_kecamatan', '=', 'kc.id_kecamatan')
             ->select(
                 'data_mitra.id_mitra',
                 'data_mitra.username',
@@ -305,14 +313,24 @@ class ProfileController extends Controller
                 'data_mitra.id_status',
                 'status_akun.status_akun'
             )
+            ->when($admin, fn($q) => $q->where('kc.id_kota', $admin->id_kota))
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $search = '%' . $request->search . '%';
+                $q->where(function ($q2) use ($search) {
+                    $q2->where('data_mitra.username', 'like', $search)
+                       ->orWhere('data_mitra.alamat', 'like', $search);
+                });
+            })
             ->orderBy('data_mitra.id_mitra', 'asc')
-            ->paginate(8);
+            ->paginate(8)
+            ->withQueryString();
 
         return view('admin.profile-admin.mitra-profiles', [
             'mitras' => $mitras,
             'notificationCount' => 1,
         ]);
     }
+
 
     public function adminMitraShow($id_mitra)
     {
