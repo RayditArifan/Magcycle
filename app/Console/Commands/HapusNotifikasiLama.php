@@ -8,19 +8,12 @@ use Illuminate\Support\Carbon;
 
 class HapusNotifikasiLama extends Command
 {
-    /**
-     * Nama dan signature command.
-     */
+
     protected $signature = 'notifikasi:hapus-lama';
 
-    /**
-     * Deskripsi command.
-     */
+
     protected $description = 'Hapus notifikasi yang sudah dibaca dan berumur lebih dari 1 minggu';
 
-    /**
-     * Jalankan command.
-     */
     public function handle(): int
     {
         $batasWaktu = Carbon::now()->subWeek();
