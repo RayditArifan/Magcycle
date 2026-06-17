@@ -6,9 +6,14 @@
     <title>Login - MagCycle</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-[#f5f5f5]">
-    <main class="min-h-screen flex flex-col items-center px-4 pt-16 pb-10">
-        <section class="text-center mb-12">
+<body class="min-h-screen overflow-hidden bg-[#fafafa] text-[#4a4a4a]">
+    <main class="relative min-h-screen flex flex-col items-center px-4 pt-16 pb-10">
+        <div class="absolute -top-24 -left-20 h-96 w-96 rounded-full bg-[#a4e0cf]/35"></div>
+        <div class="absolute left-52 top-40 h-60 w-60 rounded-full bg-[#a4e0cf]/35"></div>
+        <div class="absolute -top-20 -right-20 h-96 w-96 rounded-full bg-[#a4e0cf]/35"></div>
+        <div class="absolute -bottom-36 -left-16 h-80 w-80 rounded-full bg-[#a4e0cf]/35"></div>
+        <div class="absolute -bottom-40 -right-20 h-80 w-80 rounded-full bg-[#a4e0cf]/35"></div>
+        <section class="relative z-10 text-center mb-12">
             <h1 class="text-3xl md:text-5xl font-bold text-[#4a4a4a]">
                 Selamat Datang di Magcycle
             </h1>
@@ -17,7 +22,7 @@
             </p>
         </section>
 
-        <section class="w-full max-w-[520px] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.18)] px-7 md:px-16 py-10 md:py-12">
+        <section class="relative z-10 w-full max-w-[520px] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.18)] px-7 md:px-16 py-10 md:py-12">
             <div class="flex items-center justify-center gap-4 mb-10">
             <img
                 src="{{ asset('assets/img/logo-magcycle.jpg') }}"

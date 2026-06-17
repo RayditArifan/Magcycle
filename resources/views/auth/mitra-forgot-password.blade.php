@@ -5,8 +5,14 @@
     <title>Lupa Password Mitra</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen flex items-center justify-center bg-[#f5f5f5]">
-    <div class="w-[430px] rounded-xl border border-[#21a078] bg-white p-8 shadow">
+<body class="min-h-screen overflow-hidden bg-[#fafafa] text-[#4a4a4a]">
+    <div class="relative min-h-screen flex items-center justify-center">
+        <div class="absolute -top-24 -left-20 h-96 w-96 rounded-full bg-[#a4e0cf]/35"></div>
+        <div class="absolute left-52 top-40 h-60 w-60 rounded-full bg-[#a4e0cf]/35"></div>
+        <div class="absolute -top-20 -right-20 h-96 w-96 rounded-full bg-[#a4e0cf]/35"></div>
+        <div class="absolute -bottom-36 -left-16 h-80 w-80 rounded-full bg-[#a4e0cf]/35"></div>
+        <div class="absolute -bottom-40 -right-20 h-80 w-80 rounded-full bg-[#a4e0cf]/35"></div>
+        <div class="relative z-10 w-[430px] rounded-xl border border-[#21a078] bg-white p-8 shadow">
         <h1 class="mb-6 text-center text-3xl font-bold text-[#4a4a4a]">
             Lupa Password
         </h1>
@@ -37,6 +43,7 @@
         <a href="{{ route('login') }}" class="mt-5 block text-center font-semibold text-[#21a078]">
             Kembali ke Login
         </a>
+        </div>
     </div>
 
     @if (session('popup') === 'email_not_found')
