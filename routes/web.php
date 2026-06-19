@@ -43,8 +43,7 @@ Route::get('/admin/profile', [ProfileController::class, 'adminIndex'])
     ->name('admin.profile');
 Route::get('/admin/profile/edit', [ProfileController::class, 'adminEdit'])
     ->name('admin.profile.edit');
-Route::post('/admin/profile/edit', [ProfileController::class, 'adminUpdate'])
-    ->name('admin.profile.update');
+Route::post('/admin/profile/edit', [ProfileController::class, 'adminUpdate']);
 Route::post('/admin/profile/update', [ProfileController::class, 'adminUpdate'])
     ->name('admin.profile.update');
 
