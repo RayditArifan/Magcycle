@@ -9,7 +9,8 @@ class MitraRegisterController extends Controller
 {
     public function create()
     {
-        return view('auth.register-mitra');
+        $kabKotaList = DB::table('kab_kota')->orderBy('nama_kab_kota')->get();
+        return view('auth.register-mitra', compact('kabKotaList'));
     }
 
     public function store(Request $request)
@@ -20,9 +21,7 @@ class MitraRegisterController extends Controller
             trim($request->no_hp ?? '') === '' ||
             trim($request->password ?? '') === '' ||
             trim($request->alamat ?? '') === '' ||
-            trim($request->provinsi ?? '') === '' ||
-            trim($request->kab_kota ?? '') === '' ||
-            trim($request->kecamatan ?? '') === ''
+            !$request->filled('id_kecamatan')
         ) {
             return back()->withInput()->with('popup', 'required');
         }
@@ -39,14 +38,6 @@ class MitraRegisterController extends Controller
             return back()->withInput()->with('popup', 'password_invalid');
         }
 
-        if (
-            preg_match('/[0-9]/', $request->provinsi) ||
-            preg_match('/[0-9]/', $request->kab_kota) ||
-            preg_match('/[0-9]/', $request->kecamatan)
-        ) {
-            return back()->withInput()->with('popup', 'wilayah_invalid');
-        }
-
         $usernameSudahAda = DB::table('data_mitra')
             ->where('username', $request->username)
             ->exists();
@@ -61,21 +52,15 @@ class MitraRegisterController extends Controller
 
         $idMitra = 'M' . str_pad($lastNumber + 1, 2, '0', STR_PAD_LEFT);
 
-        $alamatLengkap = implode(', ', [
-            $request->alamat,
-            $request->kecamatan,
-            $request->kab_kota,
-            $request->provinsi,
-        ]);
-
         DB::table('data_mitra')->insert([
-            'id_mitra'  => $idMitra,
-            'username'  => $request->username,
-            'email'     => $request->email,
-            'no_hp'     => $request->no_hp,
-            'password'  => $request->password,
-            'alamat'    => $alamatLengkap,
-            'id_status' => 'ST01',
+            'id_mitra'     => $idMitra,
+            'username'     => $request->username,
+            'email'        => $request->email,
+            'no_hp'        => $request->no_hp,
+            'password'     => $request->password,
+            'alamat'       => $request->alamat,
+            'id_kecamatan' => $request->id_kecamatan,
+            'id_status'    => 'ST01',
         ]);
 
         return redirect()

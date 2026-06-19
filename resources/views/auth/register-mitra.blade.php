@@ -105,28 +105,32 @@
                             type="text"
                             name="provinsi"
                             id="provinsi"
-                            placeholder="Provinsi"
-                            value="{{ old('provinsi') }}"
-                            class="h-13 w-full rounded border border-[#cfcfcf] bg-white px-4 text-base text-[#555] outline-none placeholder:text-[#888] focus:border-[#21a078]"
+                            value="Jawa Timur"
+                            readonly
+                            class="h-13 w-full rounded border border-[#cfcfcf] bg-gray-100 px-4 text-base text-[#555] outline-none"
                         >
 
-                        <input
-                            type="text"
-                            name="kab_kota"
-                            id="kab_kota"
-                            placeholder="Kab/Kota"
-                            value="{{ old('kab_kota') }}"
-                            class="h-13 w-full rounded border border-[#cfcfcf] bg-white px-4 text-base text-[#555] outline-none placeholder:text-[#888] focus:border-[#21a078]"
+                        <select
+                            name="id_kota"
+                            id="id_kota"
+                            class="h-13 w-full rounded border border-[#cfcfcf] bg-white px-4 text-base text-[#555] outline-none focus:border-[#21a078]"
                         >
+                            <option value="">Pilih Kab/Kota</option>
+                            @foreach ($kabKotaList as $kota)
+                                <option value="{{ $kota->id_kota }}"
+                                    {{ old('id_kota') == $kota->id_kota ? 'selected' : '' }}>
+                                    {{ $kota->nama_kab_kota }}
+                                </option>
+                            @endforeach
+                        </select>
 
-                        <input
-                            type="text"
-                            name="kecamatan"
-                            id="kecamatan"
-                            placeholder="Kecamatan"
-                            value="{{ old('kecamatan') }}"
-                            class="h-13 w-full rounded border border-[#cfcfcf] bg-white px-4 text-base text-[#555] outline-none placeholder:text-[#888] focus:border-[#21a078]"
+                        <select
+                            name="id_kecamatan"
+                            id="id_kecamatan"
+                            class="h-13 w-full rounded border border-[#cfcfcf] bg-white px-4 text-base text-[#555] outline-none focus:border-[#21a078]"
                         >
+                            <option value="">Pilih Kecamatan</option>
+                        </select>
                     </div>
                 </div>
 
@@ -188,6 +192,35 @@
 
     <script>
         const registerForm = document.getElementById('registerForm');
+        const kabKotaSelect     = document.getElementById('id_kota');
+        const kecamatanSelect   = document.getElementById('id_kecamatan');
+        const selectedKecamatan = @json(old('id_kecamatan', null));
+        const kecamatanApiUrl   = '{{ url('/api/kecamatan') }}';
+
+        function loadKecamatan(idKota, preselect) {
+            kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+            if (!idKota) return;
+
+            fetch(`${kecamatanApiUrl}?id_kota=${idKota}`)
+                .then(r => r.json())
+                .then(data => {
+                    data.forEach(kec => {
+                        const opt = document.createElement('option');
+                        opt.value = kec.id_kecamatan;
+                        opt.textContent = kec.nama_kecamatan;
+                        if (preselect && kec.id_kecamatan == preselect) opt.selected = true;
+                        kecamatanSelect.appendChild(opt);
+                    });
+                });
+        }
+
+        if (kabKotaSelect.value) {
+            loadKecamatan(kabKotaSelect.value, selectedKecamatan);
+        }
+
+        kabKotaSelect.addEventListener('change', function () {
+            loadKecamatan(this.value, null);
+        });
 
         registerForm.addEventListener('submit', function(event) {
             const username = document.getElementById('username').value.trim();
@@ -196,14 +229,10 @@
             const password = document.getElementById('password').value.trim();
             const alamat = document.getElementById('alamat').value.trim();
             const provinsi = document.getElementById('provinsi').value.trim();
-            const kabKota = document.getElementById('kab_kota').value.trim();
-            const kecamatan = document.getElementById('kecamatan').value.trim();
+            const idKota = kabKotaSelect.value;
+            const idKecamatan = kecamatanSelect.value;
 
             const noTelpValid = /^[0-9]+$/.test(noTelp);
-            const wilayahValid =
-                !/[0-9]/.test(provinsi) &&
-                !/[0-9]/.test(kabKota) &&
-                !/[0-9]/.test(kecamatan);
             if (
                 username === '' ||
                 email === '' ||
@@ -211,10 +240,9 @@
                 password === '' ||
                 alamat === '' ||
                 provinsi === '' ||
-                kabKota === '' ||
-                kecamatan === '' ||
+                idKota === '' ||
+                idKecamatan === '' ||
                 !noTelpValid
-                !wilayahValid
             ) {
                 event.preventDefault();
                 showPopup('popupInvalid');
