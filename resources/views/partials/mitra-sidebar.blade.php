@@ -3,7 +3,7 @@
     <div class="px-8 py-10 border-b border-white/25">
         <div class="flex flex-col items-center">
             <img
-                src="{{ asset('assets/img/logo-magcycle.png') }}"
+                src="{{ asset('assets/img/Logo-MagCycle.png') }}"
                 alt="Logo MagCycle"
                 class="w-[95px] h-auto object-contain mb-3"
             >
