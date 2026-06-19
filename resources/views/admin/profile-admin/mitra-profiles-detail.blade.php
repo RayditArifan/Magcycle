@@ -59,19 +59,19 @@
 
                 <div>
                     <label class="mb-2 block text-[17px] font-medium text-[#4a4a4a]">Provinsi</label>
-                    <input type="text" value="-" readonly
+                    <input type="text" value="{{ $mitra->nama_provinsi ?? '-' }}" readonly
                         class="h-[40px] w-full rounded-[10px] border border-[#5b5b5b] bg-white px-4 text-[15px] text-gray-500">
                 </div>
 
                 <div>
                     <label class="mb-2 block text-[17px] font-medium text-[#4a4a4a]">Kabupaten/Kota</label>
-                    <input type="text" value="-" readonly
+                    <input type="text" value="{{ $mitra->nama_kab_kota ?? '-' }}" readonly
                         class="h-[40px] w-full rounded-[10px] border border-[#5b5b5b] bg-white px-4 text-[15px] text-gray-500">
                 </div>
 
                 <div>
                     <label class="mb-2 block text-[17px] font-medium text-[#4a4a4a]">Kecamatan</label>
-                    <input type="text" value="-" readonly
+                    <input type="text" value="{{ $mitra->nama_kecamatan ?? '-' }}" readonly
                         class="h-[40px] w-full rounded-[10px] border border-[#5b5b5b] bg-white px-4 text-[15px] text-gray-500">
                 </div>
 

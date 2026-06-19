@@ -340,7 +340,10 @@ class ProfileController extends Controller
         }
 
         $mitra = DB::table('data_mitra')
-            ->join('status_akun', 'data_mitra.id_status', '=', 'status_akun.id_status')
+            ->leftJoin('status_akun', 'data_mitra.id_status', '=', 'status_akun.id_status')
+            ->leftJoin('kecamatan', 'data_mitra.id_kecamatan', '=', 'kecamatan.id_kecamatan')
+            ->leftJoin('kab_kota', 'kecamatan.id_kota', '=', 'kab_kota.id_kota')
+            ->leftJoin('provinsi', 'kab_kota.id_provinsi', '=', 'provinsi.id_provinsi')
             ->select(
                 'data_mitra.id_mitra',
                 'data_mitra.username',
@@ -349,7 +352,10 @@ class ProfileController extends Controller
                 'data_mitra.no_hp',
                 'data_mitra.alamat',
                 'data_mitra.id_status',
-                'status_akun.status_akun'
+                'status_akun.status_akun',
+                'kecamatan.nama_kecamatan',
+                'kab_kota.nama_kab_kota',
+                'provinsi.nama_provinsi'
             )
             ->where('data_mitra.id_mitra', $id_mitra)
             ->first();
