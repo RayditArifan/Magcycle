@@ -152,15 +152,3 @@ Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifik
 Route::post('/notifikasi/{id}/read', [NotifikasiController::class, 'read'])->name('notifikasi.read');
 Route::post('/notifikasi/read-all', [NotifikasiController::class, 'readAll'])->name('notifikasi.readAll');
 
-Route::get('/api/debug-url', function () {
-    return response()->json([
-        'url_to_login' => route('login'),
-        'request_host' => request()->getHost(),
-        'request_http_host' => request()->getHttpHost(),
-        'request_scheme' => request()->getScheme(),
-        'headers' => request()->headers->all(),
-        'env_app_url' => env('APP_URL'),
-        'env_app_env' => env('APP_ENV'),
-        'config_app_url' => config('app.url'),
-    ]);
-});
