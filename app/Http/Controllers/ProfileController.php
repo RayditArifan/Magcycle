@@ -88,7 +88,6 @@ class ProfileController extends Controller
         if (
             trim($request->email ?? '') === '' ||
             trim($request->no_hp ?? '') === '' ||
-            trim($request->old_password ?? '') === '' ||
             trim($request->alamat ?? '') === '' ||
             !$request->filled('id_kecamatan')
         ) {
@@ -109,16 +108,30 @@ class ProfileController extends Controller
                 ->with('error_popup', "Nomor telepon tidak valid.\nNomor telepon hanya boleh angka");
         }
 
-        if ($request->old_password !== $admin->password) {
-            return back()
-                ->withInput()
-                ->with('error_popup', 'Password lama tidak sesuai');
-        }
+        if ($request->filled('password') || $request->filled('old_password')) {
+            if (!$request->filled('old_password')) {
+                return back()
+                    ->withInput()
+                    ->with('error_popup', 'Password lama wajib diisi jika ingin mengubah password');
+            }
 
-        if ($request->filled('password') && strlen($request->password) < 6) {
-            return back()
-                ->withInput()
-                ->with('error_popup', 'Password baru minimal 6 karakter');
+            if ($request->old_password !== $admin->password) {
+                return back()
+                    ->withInput()
+                    ->with('error_popup', 'Password lama tidak sesuai');
+            }
+
+            if (!$request->filled('password')) {
+                return back()
+                    ->withInput()
+                    ->with('error_popup', 'Password baru wajib diisi jika memasukkan password lama');
+            }
+
+            if (strlen($request->password) < 6) {
+                return back()
+                    ->withInput()
+                    ->with('error_popup', 'Password baru minimal 6 karakter');
+            }
         }
 
 
@@ -222,7 +235,7 @@ class ProfileController extends Controller
             'username'     => 'required|string|max:100',
             'email'        => 'required|email|max:150',
             'no_hp'        => 'required|regex:/^[0-9]+$/|max:20',
-            'old_password' => 'required|string',
+            'old_password' => 'nullable|string',
             'password'     => 'nullable|string|min:6|max:100',
             'alamat'       => 'required|string|max:255',
             'id_kecamatan' => 'required|exists:kecamatan,id_kecamatan',
@@ -245,22 +258,30 @@ class ProfileController extends Controller
                 ->with('popup', 'registered');
         }
 
-        if (trim($request->old_password ?? '') === '') {
-            return back()
-                ->withInput()
-                ->with('popup', 'password_required');
-        }
+        if ($request->filled('password') || $request->filled('old_password')) {
+            if (!$request->filled('old_password')) {
+                return back()
+                    ->withInput()
+                    ->with('popup', 'password_required');
+            }
 
-        if ($request->old_password !== $mitra->password) {
-            return back()
-                ->withInput()
-                ->with('popup', 'wrong_password');
-        }
+            if ($request->old_password !== $mitra->password) {
+                return back()
+                    ->withInput()
+                    ->with('popup', 'wrong_password');
+            }
 
-        if ($request->filled('password') && strlen($request->password) < 6) {
-            return back()
-                ->withInput()
-                ->with('popup', 'password_min');
+            if (!$request->filled('password')) {
+                return back()
+                    ->withInput()
+                    ->with('popup', 'wrong_password');
+            }
+
+            if (strlen($request->password) < 6) {
+                return back()
+                    ->withInput()
+                    ->with('popup', 'password_min');
+            }
         }
 
         $data = [
