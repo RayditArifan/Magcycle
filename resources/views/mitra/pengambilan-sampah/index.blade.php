@@ -37,13 +37,24 @@
                                 </h2>
 
                                 <div class="flex items-center gap-5">
-                                    <button
-                                        type="button"
-                                        id="openCreateModal"
-                                        class="rounded-xl border border-[#4a4a4a] px-5 py-3 text-[18px] font-semibold text-[#4a4a4a] transition hover:bg-[#e8f6f1]"
-                                    >
-                                        + Buat Jadwal
-                                    </button>
+                                    @if ($isBanned)
+                                        <button
+                                            type="button"
+                                            class="rounded-xl border border-red-300 bg-red-50 px-5 py-3 text-[18px] font-semibold text-red-500 cursor-not-allowed opacity-60"
+                                            title="Akun Anda ditangguhkan (banned)"
+                                            disabled
+                                        >
+                                            + Buat Jadwal
+                                        </button>
+                                    @else
+                                        <button
+                                            type="button"
+                                            id="openCreateModal"
+                                            class="rounded-xl border border-[#4a4a4a] px-5 py-3 text-[18px] font-semibold text-[#4a4a4a] transition hover:bg-[#e8f6f1]"
+                                        >
+                                            + Buat Jadwal
+                                        </button>
+                                    @endif
 
                                     <a
                                         href="{{ route('mitra.pengambilan-sampah.riwayat') }}"

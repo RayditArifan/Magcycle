@@ -313,6 +313,13 @@ class ProfileController extends Controller
                 'data_mitra.id_status',
                 'status_akun.status_akun'
             )
+            ->selectSub(function ($query) {
+                $query->selectRaw('count(*)')
+                    ->from('jadwal_pengambilan_sampah')
+                    ->whereColumn('jadwal_pengambilan_sampah.id_mitra', 'data_mitra.id_mitra')
+                    ->whereNotNull('catatan')
+                    ->where('catatan', '!=', '');
+            }, 'jumlah_peringatan')
             ->when($admin, fn($q) => $q->where('kc.id_kota', $admin->id_kota))
             ->when($request->filled('search'), function ($q) use ($request) {
                 $search = '%' . $request->search . '%';

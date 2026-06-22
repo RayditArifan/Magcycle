@@ -38,6 +38,15 @@
 
                 <tbody>
                     @forelse ($mitras as $mitra)
+                        @php
+                            if (strtolower($mitra->status_akun) === 'banned' || ($mitra->jumlah_peringatan ?? 0) > 2) {
+                                $nameColorClass = 'text-[#d91616] font-semibold';
+                            } elseif (($mitra->jumlah_peringatan ?? 0) > 0) {
+                                $nameColorClass = 'text-[#d38b00] font-semibold';
+                            } else {
+                                $nameColorClass = 'text-[#4a4a4a]';
+                            }
+                        @endphp
                         <tr class="border-t border-[#d5efe6] odd:bg-[#8fd3bd] even:bg-white text-[16px] text-[#4a4a4a] hover:brightness-95 transition">
                             {{-- Avatar --}}
                             <td class="px-4 py-3">
@@ -49,7 +58,7 @@
                             </td>
 
                             {{-- Username --}}
-                            <td class="px-4 py-3 font-medium">
+                            <td class="px-4 py-3 font-medium {{ $nameColorClass }}">
                                 {{ $mitra->username }}
                             </td>
 

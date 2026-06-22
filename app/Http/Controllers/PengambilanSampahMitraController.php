@@ -13,6 +13,13 @@ class PengambilanSampahMitraController extends Controller
     {
         $idMitra = $this->currentMitraId($request);
 
+        $mitra = DB::table('data_mitra')
+            ->join('status_akun', 'data_mitra.id_status', '=', 'status_akun.id_status')
+            ->select('status_akun.status_akun')
+            ->where('data_mitra.id_mitra', $idMitra)
+            ->first();
+        $isBanned = $mitra && strtolower($mitra->status_akun) === 'banned';
+
         $jadwalPengambilan = DB::table('jadwal_pengambilan_sampah as jp')
             ->join('status_pengambilan_sampah', 'jp.status_pengambilan_id', '=', 'status_pengambilan_sampah.id')
             ->leftJoin('kecamatan as kc', 'jp.id_kecamatan', '=', 'kc.id_kecamatan')
@@ -41,12 +48,22 @@ class PengambilanSampahMitraController extends Controller
 
         $kabKotaList = DB::table('kab_kota')->orderBy('nama_kab_kota')->get();
 
-        return view('mitra.pengambilan-sampah.index', compact('jadwalPengambilan', 'kabKotaList'));
+        return view('mitra.pengambilan-sampah.index', compact('jadwalPengambilan', 'kabKotaList', 'isBanned'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $idMitra = $this->currentMitraId($request);
+
+        $mitra = DB::table('data_mitra')
+            ->join('status_akun', 'data_mitra.id_status', '=', 'status_akun.id_status')
+            ->select('status_akun.status_akun')
+            ->where('data_mitra.id_mitra', $idMitra)
+            ->first();
+
+        if ($mitra && strtolower($mitra->status_akun) === 'banned') {
+            return back()->with('error_popup', "Akun Anda ditangguhkan (banned).\nAnda tidak dapat mengajukan pengambilan sampah.");
+        }
 
         $validated = $request->validate([
             'tanggal_pengambilan' => ['required', 'date', 'after_or_equal:today'],
