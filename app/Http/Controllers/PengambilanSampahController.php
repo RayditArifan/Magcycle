@@ -193,6 +193,16 @@ class PengambilanSampahController extends Controller
 
         $jadwalData = DB::table('jadwal_pengambilan_sampah')->where('id', $jadwal)->first();
         if ($jadwalData) {
+            // Kirim notifikasi ke mitra mengenai catatan baru
+            Notifikasi::buat(
+                recipientId:   $jadwalData->id_mitra,
+                recipientRole: 'mitra',
+                judul:         'Catatan Baru Pengambilan Sampah',
+                pesan:         "Admin menambahkan catatan pada pengambilan sampah tanggal {$jadwalData->tanggal_pengambilan}.",
+                kategori:      'Pengambilan Sampah',
+                url:           route('mitra.pengambilan-sampah.riwayat'),
+            );
+
             $catatanCount = DB::table('jadwal_pengambilan_sampah')
                 ->where('id_mitra', $jadwalData->id_mitra)
                 ->whereNotNull('catatan')
@@ -205,6 +215,16 @@ class PengambilanSampahController extends Controller
                     DB::table('data_mitra')
                         ->where('id_mitra', $jadwalData->id_mitra)
                         ->update(['id_status' => $bannedStatus->id_status]);
+
+                    // Kirim notifikasi ke mitra bahwa akun dinonaktifkan
+                    Notifikasi::buat(
+                        recipientId:   $jadwalData->id_mitra,
+                        recipientRole: 'mitra',
+                        judul:         'Akun Anda Dinonaktifkan',
+                        pesan:         'Akun Anda telah dinonaktifkan karena telah menerima 3 catatan pelanggaran.',
+                        kategori:      'Akun',
+                        url:           '#',
+                    );
                 }
             }
         }
