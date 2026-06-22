@@ -193,7 +193,7 @@ class PengambilanSampahController extends Controller
 
         $jadwalData = DB::table('jadwal_pengambilan_sampah')->where('id', $jadwal)->first();
         if ($jadwalData) {
-            // Kirim notifikasi ke mitra mengenai catatan baru
+
             Notifikasi::buat(
                 recipientId:   $jadwalData->id_mitra,
                 recipientRole: 'mitra',
