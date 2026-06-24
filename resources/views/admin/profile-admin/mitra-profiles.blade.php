@@ -39,10 +39,20 @@
                 <tbody>
                     @forelse ($mitras as $mitra)
                         @php
-                            if (strtolower($mitra->status_akun) === 'banned' || ($mitra->jumlah_peringatan ?? 0) > 2) {
+                            $warningCount = $mitra->jumlah_peringatan ?? 0;
+                            $titleText = '';
+                            if (strtolower($mitra->status_akun) === 'banned') {
                                 $nameColorClass = 'text-[#d91616] font-semibold';
-                            } elseif (($mitra->jumlah_peringatan ?? 0) > 0) {
-                                $nameColorClass = 'text-[#d38b00] font-semibold';
+                                $titleText = 'Akun Banned';
+                            } elseif ($warningCount > 2) {
+                                $nameColorClass = 'text-[#d91616] font-semibold';
+                                $titleText = 'Peringatan ' . $warningCount . ' (Banned)';
+                            } elseif ($warningCount === 2) {
+                                $nameColorClass = 'text-[#c2410c] font-semibold'; // Oranye tua
+                                $titleText = 'Peringatan 2';
+                            } elseif ($warningCount === 1) {
+                                $nameColorClass = 'text-[#d97706] font-semibold'; // Kuning ke oren
+                                $titleText = 'Peringatan 1';
                             } else {
                                 $nameColorClass = 'text-[#4a4a4a]';
                             }
@@ -58,7 +68,7 @@
                             </td>
 
                             {{-- Username --}}
-                            <td class="px-4 py-3 font-medium {{ $nameColorClass }}">
+                            <td class="px-4 py-3 font-medium {{ $nameColorClass }}" {!! $titleText ? 'title="' . htmlspecialchars($titleText) . '"' : '' !!}>
                                 {{ $mitra->username }}
                             </td>
 
