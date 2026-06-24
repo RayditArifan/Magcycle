@@ -51,7 +51,7 @@
                                 $nameColorClass = 'text-[#c2410c] font-semibold'; // Oranye tua
                                 $titleText = 'Peringatan 2';
                             } elseif ($warningCount === 1) {
-                                $nameColorClass = 'text-[#d97706] font-semibold'; // Kuning ke oren
+                                $nameColorClass = 'text-[#ca8a04] font-semibold'; // Kuning ke oren (lebih kuning)
                                 $titleText = 'Peringatan 1';
                             } else {
                                 $nameColorClass = 'text-[#4a4a4a]';
